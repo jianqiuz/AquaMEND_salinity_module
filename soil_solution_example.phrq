@@ -1,0 +1,67 @@
+
+DATABASE ../../database/minteq.dat
+
+TITLE simulate soil solution
+
+# estimate soil saolution based on clay content and the exchangeable cation
+
+SURFACE 10
+-site_units_sensity
+         Illitex     1.8E-4      97      1666.67
+         Montx       1.8E-6      800     1666.67
+         Kaolinitex  3.13e-6      10      1666.67
+                # ^site/nm^2      SSA (m^2/g)     ^M/V (g/L)
+
+EXCHANGE 10
+        Illitex       2.5e-2
+        Montx         7.29E-2
+        Kaolinitex    9.96E-4
+
+SOLUTION 1
+units mmol/L
+pH    7  charge
+temperature 	 24
+
+C(4)        4.47  # in equilibrium with CO2 in atmosphere, 400 pm
+Cl          2.73
+Br          0.00412
+N(5)        4.92
+S(6)        1.7
+Al          0.01
+Fe(3)       0
+Fe(2)       0.61
+Na          1.7 
+Mg          0.55
+Ca          0.49
+K           0.03
+USE    SURFACE 10
+USE    EXCHANGE 10
+EQUILIBRIUM_PHASES     1
+Calcite     0.00
+CO2(g)      -2
+
+
+
+REACTION 1
+HCl 0.0001
+  2 in 1 steps
+
+SAVE SOLUTION 1
+
+SELECTED_OUTPUT
+-RESET false
+-FILE soil_solution.txt
+
+USER_PUNCH
+-start
+-heading pH Na  K  Ca  Mg  NO3  Cl  SO4 HCO3
+10 PUNCH -la("H+")
+20 PUNCH tot("Na")  tot("K")  tot("Ca")  tot("Mg") tot("NO3")  tot("Cl")  tot("SO4") tot("C(4)")
+
+-end
+END
+
+
+
+
+

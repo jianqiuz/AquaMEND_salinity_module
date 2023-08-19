@@ -1,50 +1,48 @@
 
-DATABASE ../../database/minteq.dat
+DATABASE ../database/redox.dat
 
 TITLE simulate soil solution
 
 # estimate soil saolution based on clay content and the exchangeable cation
 
-SURFACE 10
--site_units_sensity
-         Illitex     1.8E-4      97      1666.67
-         Montx       1.8E-6      800     1666.67
-         Kaolinitex  3.13e-6      10      1666.67
-                # ^site/nm^2      SSA (m^2/g)     ^M/V (g/L)
-
-EXCHANGE 10
-        Illitex       2.5e-2
-        Montx         7.29E-2
-        Kaolinitex    9.96E-4
-
 SOLUTION 1
 units mmol/L
-pH    7  charge
+pH    7  
 temperature 	 24
 
 C(4)        4.47  # in equilibrium with CO2 in atmosphere, 400 pm
-Cl          2.73
+Cl          1.73   
 Br          0.00412
-N(5)        4.92
-S(6)        1.7
+Nitrate        4.92
+Sulfate        1.7
 Al          0.01
-Fe(3)       0
-Fe(2)       0.61
-Na          1.7 
+Ferric       0.61
+Na          1.7   charge
 Mg          0.55
 Ca          0.49
-K           0.03
-USE    SURFACE 10
-USE    EXCHANGE 10
-EQUILIBRIUM_PHASES     1
-Calcite     0.00
-CO2(g)      -2
+K           1.3
+  SAVE SOLUTION 1
+END
+ 
+USE SOLUTION 1
 
-
+ 
+EQUILIBRIUM_PHASES 1
+  redoxFe(OH)3(a) 0.0 2.63879401E-04
+SURFACE 1
+Hfo_w redoxFe(OH)3(a) 0.2 1.068E4
+Hfo_s redoxFe(OH)3(a) 0.005 1.068E4
+  H_a   3.837E-04  3.417E+04      0.540
+  H_b   3.837E-04; H_c   3.837E-04; H_d  3.837E-04
+  H_e   1.919E-04; H_f   1.919E-04; H_g  1.919E-04; H_h  1.919E-04
+  H_ab  6.378E-05; H_ad  6.378E-05; H_af  6.378E-05; H_ah  6.378E-05
+  H_bc  6.378E-05; H_be  6.378E-05; H_bg  6.378E-05; H_cd  6.378E-05
+  H_cf  6.378E-05; H_ch  6.378E-05; H_de  6.378E-05; H_dg  6.378E-05
+  -equil 1
 
 REACTION 1
-HCl 0.0001
-  2 in 1 steps
+K2SulfateO4  0.0001  #each step 0.0001 mol
+ 40 in 40 steps
 
 SAVE SOLUTION 1
 
@@ -56,7 +54,7 @@ USER_PUNCH
 -start
 -heading pH Na  K  Ca  Mg  NO3  Cl  SO4 HCO3
 10 PUNCH -la("H+")
-20 PUNCH tot("Na")  tot("K")  tot("Ca")  tot("Mg") tot("NO3")  tot("Cl")  tot("SO4") tot("C(4)")
+20 PUNCH tot("Na")  tot("K")  tot("Ca")  tot("Mg") tot("Nitrate")  tot("Cl")  tot("Sulfate") tot("C(4)")
 
 -end
 END

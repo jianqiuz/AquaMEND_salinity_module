@@ -1,0 +1,131 @@
+---
+title: "MENDsimulations"
+author: "Jianqiu Zheng"
+date: "7/15/2021"
+output: html_document
+---
+
+##simplified model structure to keep consistency with a typical 4 pool model 
+```{r setup, include=FALSE}
+library(FME)
+library(deSolve)
+##solving simple MEND model
+pars<- list (Vd=0.8,Vp=32, CUE=0.4)
+solveMEND <- function(pars,times){
+ derivs <- function(t, state, pars){
+      with(as.list(c(state, pars)),{
+        #default paramters
+   # Carbon use effciency
+        Vm = 0.2
+        #Vp=36
+        #Vp=41.4
+        #CUE = 0.21
+        kD = 0.25
+        kP = 50  #half saturation constant for POM
+        kM = 250
+        kb = 0.02
+        Kads = 0.006 
+        Kdes = 0.001 
+        Qmax = 0.5
+        pEP=0.001 
+        pEM=0.001
+        rEP=1e-3 
+        rEM=1e-3 
+        fD=0.5 
+        gD=0.5
+        Ipom=0  #Input  (mgC g soil day-1)
+        Idom=0  #Input
+    F1 <- Vd* MB *DOM /( kD + DOM)  ## microbial uptake 
+    F2 <- Vp* EP * POM / (kP + POM) # POM decomposition
+    F3 <- Vm * EM * MOM / (kM + MOM) #MOAM decomposition
+    F6 <- Kads * DOM *(1- QOM/ Qmax) ##adsorption
+    F7 <- Kdes * QOM/Qmax  ##desorption
+    F8 <- kb*MB  #microbial biomass decay
+    F9ep <- pEP * MB   #enzyme production 
+    F9em <- pEM * MB
+    F10ep <- rEP * EP  #enzyme decay
+    F10em <- rEM * EM
+    
+    dPOM <- Ipom+(1 - gD) * F8- F2
+    dMOM <- (1 - fD) * F2 - F3
+    dMB <- F1*CUE - F8 - (F9em + F9ep) # Microbial growth= microbial uptake *CUE
+    dDOM <- Idom+fD * F2 + gD * F8 + F3 + (F10em + F10ep)- F1 - (F6 - F7)
+    dQOM <- F6 - F7
+    dEP <- F9ep - F10ep
+    dEM <- F9em - F10em
+    dIC <- F1*(1-CUE)   #CO2 fllux
+    dTot <- -F1*(1-CUE)
+    return(list(c(dPOM, dMOM, dQOM, dDOM, dMB,dEP,dEM, dIC, dTot)))
+      })
+ }
+
+times=seq(0,400, by=1)
+#state<-c(POM=3.25, MOM=27.97, QOM=0, DOM=0.21, MB=0.64, EP=0.064, EM=0.064, IC=0, Tot=32.198)#Mollisol
+#state<-c(POM=4.25, MOM=11.04, QOM=0, DOM=0.17, MB=0.05, EP=0.005, EM=0.005, IC=0, Tot=15.52)#Gelisol
+state<-c(POM=4.71, MOM=15.903, QOM=1.767, DOM=0.48, MB=0.52, EP=0.052, EM=0.052, IC=0, Tot=23.484)#Ultisol
+#state<-c(POM=20.06, MOM=64.86, QOM=0, DOM=0.64, MB=0.86, EP=0.086, EM=0.086, IC=0, Tot=86.592)#Andisol
+
+#solved the mode
+  ox<-ode(y=state, times=times, func=derivs, parms=pars)
+
+data.frame(ox[,1:10])
+}
+ 
+output<-solveMEND(pars) 
+
+plot(output$time,output$IC, type = "l",xlab = "Time (h)", ylab = "Concentration (mM)", lwd=3,col="#7f3b08", xlim=c(0,300), ylim=c(0,4))
+```
+
+##Data fitting to optimize
+##Use both CO2 and microbial biomass data for optimization
+```{r data}
+
+Data<-read.csv("Ultisol_control_gram2.csv",header=TRUE)
+
+Objective <- function(x, parset = names(x)) {
+ pars[parset] <- x
+ tout <- seq(0, 300, by = 1) ## output times
+ out <- solveMEND(pars, tout)
+ return(modCost(model = out, obs = Data))## Model cost
+}
+
+
+#parameters are constrained to be >0
+print(system.time(Fit <- modFit(p = c(Vd=0.5,Vp=50, CUE=0.6),
+ f = Objective, lower = c(0,0,0))))
+#CUE range 0.25 to 0.75
+
+summary(Fit)
+
+```
+
+
+##graph model fit
+```{r plot}
+
+pars[c("Vd","Vp","CUE")]<-Fit$par
+#pars<- list (vmax1=1,vmax2=46,vmax3=69)
+output<-solveMEND(pars)  
+
+mfit<-as.data.frame(output[, 1:10])
+colnames(mfit) <- c("time", "POM","MOM","QOM","DOM","MB","EP","EM","IC","Tot")
+head(mfit)
+
+plot(mfit$time, mfit$DOM)
+
+plot(mfit$time, mfit$MB)
+write.csv(mfit, "Ul_test.csv")
+
+#pdf("Andisol_control.pdf", width=6, height=4)
+#par(xpd = T, mar = par()$mar + c(0,0,0,5))
+plot(Data$time,Data$IC, xlab = "Time (d)", ylab = "Respiration (mgC g-1 soil)", pch=16, cex=1.2,col="#e08214", xlim=c(0,400), ylim=c(0,5),cex.lab=1.2, cex.axis=1.2)
+lines(mfit$time, mfit$IC, lwd=2, col="#e08214")
+
+#dev.off()
+
+
+plot(Data$time,Data$MB, xlab = "Time (d)", ylab = "Respiration (mgC g-1 soil)", pch=16, cex=1.2,col="#e08214", xlim=c(0,400), ylim=c(0,1),cex.lab=1.2, cex.axis=1.2)
+lines(mfit$time, mfit$MB, lwd=2, col="#e08214")
+
+```
+

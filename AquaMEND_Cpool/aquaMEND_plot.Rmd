@@ -1,0 +1,873 @@
+---
+title: "MENDsimulations"
+author: "Jianqiu Zheng"
+date: "7/15/2021"
+output: html_document
+---
+
+
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(ggpubr)
+library(scales)
+library(MASS) # to access Animals data sets
+library(ggallin)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(stringr)
+library(ggpmisc)
+theme_pubr()
+```
+
+##Figure 1 Comparing effect of 3 exchange component
+
+```{r data}
+ctrl<-read.delim("new_ref.txt",header=TRUE)
+fs1<-read.delim("cue_fs1.txt",header=TRUE)
+fs2<-read.delim("cue_fs2.txt",header=TRUE)
+fs3<-read.delim("cue_fs3.txt",header=TRUE)
+fs4<-read.delim("cue_fs4.txt",header=TRUE)
+obv<-read.csv("Ultisol_control_gram.csv")
+##--------simple data visualization
+ctrl<-ctrl[-(1:2), ]
+fs1<-fs1[-(1:2), ]
+fs2<-fs2[-(1:2), ]
+fs3<-fs3[-(1:2), ]
+fs4<-fs4[-(1:2), ]
+
+df<-data.frame(matrix(NA, nrow=nrow(fs1)))
+df$time<-fs1$Time
+df$fs1<-fs1$IC
+df$fs2<-fs2$IC
+df$fs3<-fs3$IC
+df$fs4<-fs4$IC
+
+df<-df[,-1]
+newdf<-reshape2::melt(df, id.var="time")
+
+scaleFUN <- function(x) sprintf("%.1f", x)
+
+plot1<-ggplot()+geom_line(newdf, mapping=aes(time, value, color=variable, linetype=variable),linewidth=0.5)+ 
+  scale_color_manual(values=c("#542788","#8073ac","#b35806","#7f3b08"))+ scale_linetype_manual(values=c("solid","solid","solid","solid"))+
+  scale_x_continuous(breaks=c(0,100,200,300))+
+  scale_y_continuous(labels=scaleFUN)+
+ theme_pubr(border=TRUE)+theme(legend.position="none")+theme(text=element_text(size=10))+xlab("Time(Day)")+ylab("IC")
+plot2<-plot1+geom_boxplot(obv, mapping=aes(x=time, y=IC, group=time), color="black", alpha=0.2, width=16)
+plot3<-plot2+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs1, ymax=fs2), fill="#b2abd2", alpha=0.5)
+plot4<-plot3+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs3, ymax=fs4), fill="#b35806", alpha=0.3)
+plot4 
+
+
+pdf("cue_IC_obv.pdf",width=2.2, height=2)
+plot4
+dev.off()
+#-----testing salinity response-------
+
+df<-data.frame(matrix(NA, nrow=nrow(fs1)))
+df$time<-fs1$Time
+df$fs1<-fs1$SC/1000
+df$fs2<-fs2$SC/1000
+df$fs3<-fs3$SC/1000
+df$fs4<-fs4$SC/1000
+
+df<-df[,-1]
+newdf<-reshape2::melt(df, id.var="time")
+plot1<-ggplot()+geom_line(newdf, mapping=aes(time, value, color=variable, linetype=variable),linewidth=0.5)+ 
+  scale_color_manual(values=c("#542788","#8073ac","#b35806","#7f3b08"))+ scale_linetype_manual(values=c("solid","solid","solid","solid"))+
+  scale_x_continuous(breaks=c(0,200,400))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(text=element_text(size=10))+xlab("Time(Day)")+ylab("SC")
+
+
+
+#---legend------
+
+df=data.frame(x = seq(0, 3, by=1))
+df$y1<-1
+df$y2<-2
+df$y3<-4
+df$y4<-5
+newdf<-reshape2::melt(df, id.var="x")
+
+plot1<-ggplot()+geom_line(newdf, mapping=aes(x, value, color=variable, linetype=variable),linewidth=1)+ 
+  scale_color_manual(values=c("#542788","#8073ac","#b35806","#7f3b08"))+     scale_linetype_manual(values=c("solid","solid","solid","solid"))+
+  scale_y_continuous(limits=c(0,15))+
+  #scale_y_continuous(limits=c(-0.02,0.02), breaks=c(-0.1,0,0.1))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(text=element_text(size=10))
+
+plot3<-plot1+geom_ribbon(data=df, mapping=aes(x=x, ymin=y1, ymax=y2), fill="#b2abd2", alpha=0.5)
+plot4<-plot3+geom_ribbon(data=df, mapping=aes(x=x, ymin=y3, ymax=y4), fill="#b35806", alpha=0.3)
+  
+pdf("Rsalt_sensitivity_label.pdf",width=3.5, height=2.5)
+plot4
+dev.off()
+
+#------
+plot1<-ggplot()+geom_boxplot(obv, mapping=aes(x=time, y=IC, group=time), color="black", alpha=0.2, width=16)+ 
+  scale_x_continuous(breaks=c(0,200,400))+
+  #scale_y_continuous(limits=c(-0.02,0.02), breaks=c(-0.1,0,0.1))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(text=element_text(size=10))+xlab("Time(Day)")+ylab("IC")
+
+pdf("Rsalt_obv_label.pdf",width=4, height=3)
+plot1
+dev.off()
+
+
+```
+
+
+###plot percent changes in different pools
+
+```{r sensitivity}
+df<-data.frame(matrix(NA, nrow=nrow(ctrl)))
+df$time<-ctrl$Time
+df$fs1<-fs1$BA/ctrl$BA-1
+df$fs2<-fs2$BA/ctrl$BA-1
+df$fs3<-fs3$BA/ctrl$BA-1
+df$fs4<-fs4$BA/ctrl$BA-1
+
+df<-df[,-1]
+newdf<-reshape2::melt(df, id.var="time")
+
+plot1<-ggplot()+geom_line(newdf, mapping=aes(time, value, color=variable),linewidth=0.5)+ 
+  scale_color_manual(values=c("#542788","#8073ac","#b35806","#7f3b08"))+ 
+  geom_hline(yintercept=0, linetype="dashed")+
+  scale_y_continuous(labels=percent, limits=c(-1,1))+
+  scale_x_continuous(breaks=c(0,100,200,300))+
+  theme_pubr(border=TRUE)+theme(legend.position="none")+
+  theme(text=element_text(size=10))+
+  xlab("Time(Day)")+
+  ylab("BA")
+plot3<-plot1+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs1, ymax=fs2), fill="#b2abd2", alpha=0.5)
+plot4<-plot3+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs3, ymax=fs4), fill="#b35806", alpha=0.3)
+plot4
+
+pdf("cue_BA.pdf",width=2.5, height=2)
+plot4
+dev.off()
+
+#----
+df<-data.frame(matrix(NA, nrow=nrow(ctrl)))
+df$time<-ctrl$Time
+df$fs1<-(fs1$DOM+fs1$QOM)/(ctrl$DOM+ctrl$QOM)-1
+df$fs2<-(fs2$DOM+fs2$QOM)/(ctrl$DOM+ctrl$QOM)-1
+df$fs3<-(fs3$DOM+fs3$QOM)/(ctrl$DOM+ctrl$QOM)-1
+df$fs4<-(fs4$DOM+fs4$QOM)/(ctrl$DOM+ctrl$QOM)-1
+
+
+df<-data.frame(matrix(NA, nrow=nrow(ctrl)))
+df$time<-ctrl$Time
+df$fs1<-(fs1$DOM)/(ctrl$DOM)-1
+df$fs2<-(fs2$DOM)/(ctrl$DOM)-1
+df$fs3<-(fs3$DOM)/(ctrl$DOM)-1
+df$fs4<-(fs4$DOM)/(ctrl$DOM)-1
+
+df<-df[,-1]
+newdf<-reshape2::melt(df, id.var="time")
+
+plot1<-ggplot()+geom_line(newdf, mapping=aes(time, value, color=variable),linewidth=0.5)+ 
+  scale_color_manual(values=c("#542788","#8073ac","#b35806","#7f3b08"))+ geom_hline(yintercept=0, linetype="dashed")+
+   scale_y_continuous(labels=percent, limits=c(-20, 20))+
+  scale_x_continuous(breaks=c(0,100,200,300))+
+  theme_pubr(border=TRUE)+theme(legend.position="none")+
+  theme(text=element_text(size=10))+
+  xlab("Time(Day)")+
+  ylab("DOM")
+plot3<-plot1+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs1, ymax=fs2), fill="#b2abd2", alpha=0.5)
+plot4<-plot3+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs3, ymax=fs4), fill="#b35806", alpha=0.3)
+plot4
+
+pdf("cue_DOM.pdf",width=2.4, height=2)
+plot4
+dev.off()
+
+#---------------------------------------
+
+df<-data.frame(matrix(NA, nrow=nrow(ctrl)))
+df$time<-ctrl$Time
+df$fs1<-fs1$MOM/ctrl$MOM-1
+df$fs2<-fs2$MOM/ctrl$MOM-1
+df$fs3<-fs3$MOM/ctrl$MOM-1
+df$fs4<-fs4$MOM/ctrl$MOM-1
+
+
+df<-df[,-1]
+newdf<-reshape2::melt(df, id.var="time")
+
+plot1<-ggplot()+geom_line(newdf, mapping=aes(time, value, color=variable),linewidth=0.5)+ 
+  scale_color_manual(values=c("#542788","#8073ac","#b35806","#7f3b08"))+ geom_hline(yintercept=0, linetype="dashed")+
+   scale_y_continuous(labels=percent, limits=c(-0.1,0.1))+
+  scale_x_continuous(breaks=c(0,100,200,300))+
+  theme_pubr(border=TRUE)+theme(legend.position="none")+
+  theme(text=element_text(size=10))+
+  xlab("Time(Day)")+
+  ylab("MOM")
+plot3<-plot1+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs1, ymax=fs2), fill="#b2abd2", alpha=0.5)
+plot4<-plot3+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs3, ymax=fs4), fill="#b35806", alpha=0.3)
+plot4
+
+pdf("cue_MOM.pdf",width=2.4, height=2)
+plot4
+dev.off()
+
+
+#----
+df<-data.frame(matrix(NA, nrow=nrow(ctrl)))
+df$time<-ctrl$Time
+df$fs1<-fs1$Total/ctrl$Total-1
+df$fs2<-fs2$Total/ctrl$Total-1
+df$fs3<-fs3$Total/ctrl$Total-1
+df$fs4<-fs4$Total/ctrl$Total-1
+#----
+df<-data.frame(matrix(NA, nrow=nrow(ctrl)))
+df$time<-ctrl$Time
+df$fs1<-(fs1$EM+fs1$EP)/(ctrl$EM+ctrl$EP)-1
+df$fs2<-(fs2$EM+fs2$EP)/(ctrl$EM+ctrl$EP)-1
+df$fs3<-(fs3$EM+fs3$EP)/(ctrl$EM+ctrl$EP)-1
+df$fs4<-(fs4$EM+fs4$EP)/(ctrl$EM+ctrl$EP)-1
+
+
+#----
+df<-data.frame(matrix(NA, nrow=nrow(ctrl)))
+df$time<-ctrl$Time
+df$fs1<-(fs1$EP)/(ctrl$EP)-1
+df$fs2<-(fs2$EP)/(ctrl$EP)-1
+df$fs3<-(fs3$EP)/(ctrl$EP)-1
+df$fs4<-(fs4$EP)/(ctrl$EP)-1
+
+
+df<-df[,-1]
+newdf<-reshape2::melt(df, id.var="time")
+
+plot1<-ggplot()+geom_line(newdf, mapping=aes(time, value, color=variable),linewidth=1)+ 
+  scale_color_manual(values=c("#542788","#8073ac","#b35806","#7f3b08"))+ 
+  geom_hline(yintercept=0, linetype="dashed")+   
+  scale_y_continuous(labels=percent, limits=c(-1,1))+
+  scale_x_continuous(breaks=c(0,200,400))+
+  theme_pubr(border=TRUE)+theme(legend.position="right")+
+  theme(text=element_text(size=10))+
+  xlab("Time(Day)")+
+  ylab("Tot_Enzyme")
+
+plot3<-plot1+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs1, ymax=fs2), fill="#b2abd2", alpha=0.5)
+plot4<-plot3+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs3, ymax=fs4), fill="#b35806", alpha=0.3)
+
+pdf("Ex1_En.pdf",width=3.3, height=2)
+plot4
+dev.off()
+
+
+#----
+df<-data.frame(matrix(NA, nrow=nrow(ctrl)))
+df$time<-ctrl$Time
+df$SC<-ctrl$SC/1000
+
+plot1<-ggplot()+geom_line(df, mapping=aes(time, SC),linewidth=1, color="#542788")+ 
+  scale_x_continuous(breaks=c(0,200,400))+
+  theme_pubr(border=TRUE)+theme(legend.position="right")+
+  theme(text=element_text(size=12))+
+  xlab("Time(Day)")+
+  ylab("SC (dS/m)")
+pdf("Ex1_SC.pdf",width=2.2, height=2)
+plot1
+dev.off()
+
+#----
+
+
+```
+
+
+
+##load data
+```{r data}
+
+fresh<-read.csv("clay_fresh.csv",header=TRUE)
+fresh$time<-c(6,19,33,47,62,75,89,103,117,131,145,159,173,187,201)
+
+salt<-read.csv("clay_salt.csv",header=TRUE)
+salt$time<-c(6,19,33,47,62,75,89,103,117,131,145,159,173,187,201)
+
+mod1<-read.delim("vanD_clay_fresh_low.txt",header=TRUE)
+mod1<-mod1[-1, ]
+
+mod2<-read.delim("vanD_clay_fresh_ref.txt",header=TRUE)
+mod2<-mod2[-1, ]
+
+mod3<-read.delim("vanD_clay_fresh_high.txt",header=TRUE)
+mod3<-mod3[-1, ]
+
+
+
+salt1<-read.delim("vanD_clay_salt_low.txt",header=TRUE)
+salt1<-salt1[-1, ]
+
+salt2<-read.delim("vanD_clay_salt_ref.txt",header=TRUE)
+salt2<-salt2[-1, ]
+
+salt3<-read.delim("vanD_clay_salt_high.txt",header=TRUE)
+salt3<-salt3[-1, ]
+
+ctf<-read.delim("vanD_clay_fresh_ctrl.txt",header=TRUE)
+ctf<-ctf[-1, ]
+cts<-read.delim("vanD_clay_salt_ctrl.txt",header=TRUE)
+cts<-cts[-1, ]
+
+
+df<-data.frame(matrix(NA, nrow=15))
+df$time<-fresh$time
+df$lwr<-mod1$PO4*1000
+df$ref<-mod2$PO4*1000
+df$upr<-mod3$PO4*1000
+df<-df[,-1]
+
+
+
+ds<-data.frame(matrix(NA, nrow=15))
+ds$time<-salt$time
+ds$lwr<-salt1$PO4*1000
+ds$ref<-salt2$PO4*1000
+ds$upr<-salt3$PO4*1000
+ds<-ds[,-1]
+
+
+obv<-data.frame(matrix(NA, nrow=15))
+obv$time<-fresh$time
+obv$fresh<-fresh$PO4
+obv$salt<-salt$PO4
+obv<-obv[,-1]
+
+obvdf<-reshape2::melt(obv, id.var="time")
+
+
+ctrl<-data.frame(matrix(NA, nrow=15))
+ctrl$time<-fresh$time
+ctrl$fresh<-ctf$PO4*1000
+ctrl$salt<-cts$PO4*1000
+ctrl<-ctrl[,-1]
+
+ctdf<-reshape2::melt(ctrl, id.var="time")
+
+
+plot1<-ggplot()+geom_point(obvdf, mapping=aes(time, value, color=variable), size=2)+
+ scale_y_continuous(limits=c(0,0.2), breaks=c(0,0.1,0.2))+
+  scale_x_continuous(limits=c(0,205), breaks=c(0,100,200))+
+ scale_color_manual(values = c("#b35806","#8073ac"))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(strip.text=element_text(size=18, face="bold"))+xlab("Time(Day)")+ylab("Ptot (mM)")
+
+plot2<-plot1+
+  geom_line(data=df, mapping=aes(x=time, y=ref),color="#b35806",linewidth=1.2 )+geom_ribbon(data=df, aes(x=time, ymin=lwr, ymax=upr), alpha=0.3,inherit.aes=F, fill="#b35806" )
+
+plot3<-plot2+
+  geom_line(data=ds, mapping=aes(x=time, y=ref),color="#8073ac",linewidth=1.2 )+geom_ribbon(data=ds, aes(x=time, ymin=lwr, ymax=upr), alpha=0.3,inherit.aes=F, fill="#8073ac" )
+
+plot4<-plot3+geom_line(data=ctdf, mapping=aes(x=time, y=value, color=variable),linetype="dashed",linewidth=1 )
+plot4
+
+
+
+pdf("clay_P.pdf",width=3.8, height=2.5)
+plot4
+dev.off()
+
+
+
+#------------------
+
+df<-data.frame(matrix(NA, nrow=15))
+df$time<-fresh$time
+df$lwr<-mod1$pH
+df$ref<-mod2$pH
+df$upr<-mod3$pH
+df<-df[,-1]
+
+
+
+ds<-data.frame(matrix(NA, nrow=15))
+ds$time<-salt$time
+ds$lwr<-salt1$pH
+ds$ref<-salt2$pH
+ds$upr<-salt3$pH
+ds<-ds[,-1]
+
+
+obv<-data.frame(matrix(NA, nrow=15))
+obv$time<-fresh$time
+obv$fresh<-fresh$pH
+obv$salt<-salt$pH
+obv<-obv[,-1]
+
+obvdf<-reshape2::melt(obv, id.var="time")
+
+
+ctrl<-data.frame(matrix(NA, nrow=15))
+ctrl$time<-fresh$time
+ctrl$fresh<-ctf$pH
+ctrl$salt<-cts$pH
+ctrl<-ctrl[,-1]
+
+ctdf<-reshape2::melt(ctrl, id.var="time")
+
+
+plot1<-ggplot()+geom_point(obvdf, mapping=aes(time, value, color=variable), size=2)+
+scale_y_continuous(limits=c(6,10), breaks=c(6,8,10))+
+  scale_x_continuous(limits=c(0,205), breaks=c(0,100,200))+
+ scale_color_manual(values = c("#b35806","#8073ac"))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(strip.text=element_text(size=18, face="bold"))+xlab("Time(Day)")+ylab("pH")
+
+plot2<-plot1+
+  geom_line(data=df, mapping=aes(x=time, y=ref),color="#b35806",linewidth=1.2 )+geom_ribbon(data=df, aes(x=time, ymin=lwr, ymax=upr), alpha=0.3,inherit.aes=F, fill="#b35806" )
+
+plot3<-plot2+
+  geom_line(data=ds, mapping=aes(x=time, y=ref),color="#8073ac",linewidth=1.2 )+geom_ribbon(data=ds, aes(x=time, ymin=lwr, ymax=upr), alpha=0.3,inherit.aes=F, fill="#8073ac" )
+
+plot4<-plot3+geom_line(data=ctdf, mapping=aes(x=time, y=value, color=variable),linetype="dashed",linewidth=1 )
+plot4
+
+
+
+pdf("clay_pH.pdf",width=3.8, height=2.5)
+plot4
+dev.off()
+
+
+
+```
+
+
+##Hypothesis testing 1:1 IC plots
+
+```{r data}
+ctrl<-read.delim("Rsalt_ref.txt",header=TRUE)
+fs1<-read.delim("Rsalt_ref_Ex3_f1_new.txt",header=TRUE)
+fs2<-read.delim("Rsalt_ref_Ex3_lowSB_f1.txt",header=TRUE)
+fs3<-read.delim("Rsalt_ref_Ex3_agg_f1.txt",header=TRUE)
+fs4<-read.delim("Rsalt_ref_Ex3_both_f1.txt",header=TRUE)
+obv<-read.csv("Ultisol_control.csv")
+##--------simple data visualization
+ctrl<-ctrl[-(1:2), ]
+fs1<-fs1[-(1:2), ]
+fs2<-fs2[-(1:2), ]
+fs3<-fs3[-(1:2), ]
+fs4<-fs4[-(1:2), ]
+
+df<-data.frame(matrix(NA, nrow=nrow(ctrl)))
+df$time<-ctrl$Time
+df$fs1<-fs1$IC
+df$fs2<-fs2$IC
+df$fs3<-fs3$IC
+df$fs4<-fs4$IC
+
+df<-df[,-1]
+newdf<-reshape2::melt(df, id.var="time")
+
+
+
+plot1<-ggplot()+geom_line(newdf, mapping=aes(time, value, color=variable, linetype=variable),linewidth=0.5)+ 
+  scale_color_manual(values=c("#542788","#8073ac","#b35806","#7f3b08"))+ scale_linetype_manual(values=c("solid","solid","solid","solid"))+
+  scale_x_continuous(breaks=c(0,200,400))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(text=element_text(size=12))+xlab("Time(Day)")+ylab("IC")
+plot2<-plot1+geom_boxplot(obv, mapping=aes(x=time, y=IC, group=time), color="black", alpha=0.2, width=16)
+plot3<-plot2+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs1, ymax=fs2), fill="#b2abd2", alpha=0.5)
+plot4<-plot3+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs3, ymax=fs4), fill="#b35806", alpha=0.3)
+  
+
+pdf("Rsalt_Ex3_agg_IC_obv.pdf",width=3.5, height=2.5)
+plot4
+dev.off()
+#--------------
+
+
+
+
+#-----anova---
+df<-data.frame(matrix(NA, nrow=nrow(ctrl)))
+df$time<-ctrl$Time
+df$fs1<-fs1$IC
+df$fs2<-fs2$IC
+df$fs3<-fs3$IC
+df$fs4<-fs4$IC
+df<-df[,-1]
+
+#---select rows based on values in a vector
+df<-df[df$time %in% obv$time, ]
+newdf<-reshape2::melt(df, id.var="time")
+
+#-----
+obv_mean<-read.csv("Ultisol_control_mean.csv")
+df$mean<-obv_mean$mean
+df<-df[,-1]
+meandf<-reshape2::melt(df, id.var="mean")
+
+
+obvdf<-reshape2::melt(obv_mean, id.var=c("mean","time"))
+
+plot1<-ggplot()+geom_line(meandf, mapping=aes(mean, value, color=variable, linetype=variable),linewidth=0.5, se=FALSE)+geom_abline(slope=1, intercept=0,color="gray")+ 
+  scale_color_manual(values=c("#542788","#8073ac","#b35806","#7f3b08"))+ scale_linetype_manual(values=c("solid","solid","solid","solid"))+
+  scale_x_continuous(limits=c(0,4), breaks=c(0,2,4))+ scale_y_continuous(limits=c(0,4), breaks=c(0,2,4))+
+ theme_pubr(border=TRUE)+theme(legend.position="none")+theme(text=element_text(size=12))+ theme(axis.title.x=element_blank(), axis.title.y=element_blank())
+plot2<-plot1+geom_boxplot(obvdf, mapping=aes(x=value, y=mean,group=mean), color="black", alpha=0.6)
+plot3<-plot2+geom_ribbon(data=df, mapping=aes(x=mean, ymin=fs1, ymax=fs2), fill="#b2abd2", alpha=0.5)
+plot4<-plot3+geom_ribbon(data=df, mapping=aes(x=mean, ymin=fs3, ymax=fs4), fill="#b35806", alpha=0.3)
+  
+
+
+pdf("Ex4_both_IC_obv.pdf",width=2.5, height=2.5)
+plot4
+dev.off()
+
+```
+
+#
+```{r data}
+ctrl1<-read.delim("Rsalt_ref_Ex1_f1.txt",header=TRUE)
+ctrl2<-read.delim("Rsalt_ref_Ex1_f2.txt",header=TRUE)
+ctrl3<-read.delim("Rsalt_ref_Ex1_f3.txt",header=TRUE)
+ctrl4<-read.delim("Rsalt_ref_Ex1_f4.txt",header=TRUE)
+
+
+fs1<-read.delim("Rsalt_ref_Ex1_agg_f1.txt",header=TRUE)
+fs2<-read.delim("Rsalt_ref_Ex1_agg_f2.txt",header=TRUE)
+fs3<-read.delim("Rsalt_ref_Ex1_agg_f3.txt",header=TRUE)
+fs4<-read.delim("Rsalt_ref_Ex1_agg_f4.txt",header=TRUE)
+
+
+df<-data.frame(matrix(NA, nrow=nrow(ctrl1)))
+df$time<-ctrl1$Time
+df$fs1<-fs1$IC/ctrl1$IC-1
+df$fs2<-fs2$IC/ctrl2$IC-1
+df$fs3<-fs3$IC/ctrl3$IC-1
+df$fs4<-fs4$IC/ctrl4$IC-1
+
+df<-df[,-1]
+newdf<-reshape2::melt(df, id.var="time")
+
+plot1<-ggplot()+geom_line(newdf, mapping=aes(time, value, color=variable),linewidth=1)+ 
+  scale_color_manual(values=c("#542788","#8073ac","#b35806","#7f3b08"))+ 
+  geom_hline(yintercept=0, linetype="dashed")+
+  scale_y_continuous(labels=percent, limits=(c(-0.25,0)), breaks=c(-0.2,-0.1,0))+
+  scale_x_continuous(breaks=c(0,200,400))+
+  theme_pubr(border=TRUE)+theme(legend.position="none")+
+  theme(text=element_text(size=12))+
+  xlab("Time(Day)")+
+  ylab("Relative change")
+plot3<-plot1+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs1, ymax=fs2), fill="#b2abd2", alpha=0.5)
+plot4<-plot3+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs3, ymax=fs4), fill="#b35806", alpha=0.3)
+plot4
+
+pdf("Ex1_agg_IC.pdf",width=3, height=2.5)
+plot4
+dev.off()
+
+```
+
+
+
+##graph all soils
+```{r plot}
+
+Ul<-read.csv("Ultisol_control.csv",header=TRUE)
+Ge<-read.csv("Gelisol_control.csv",header=TRUE)
+Mo<-read.csv("Mollisol_control.csv",header=TRUE)
+An<-read.csv("Andisol_control.csv",header=TRUE)
+
+SUl<-read.csv("Ultisol_simulations.csv",header=TRUE)
+SGe<-read.csv("Gelisol_simulations.csv",header=TRUE)
+SMo<-read.csv("Mollisol_simulations.csv",header=TRUE)
+SAn<-read.csv("Andisol_simulations.csv",header=TRUE)
+
+
+
+pdf("4soils.pdf", width=6, height=4)
+par(xpd = T, mar = par()$mar + c(0,0,0,10))
+plot(Ul$time,Ul$IC/23.484, xlab = "Time (d)", ylab = "Respiration (mgC g-1 C)", pch=16, cex=1.2,col="#b35806", xlim=c(0,400), ylim=c(0,0.2),cex.lab=1.2, cex.axis=1.2)
+lines(SUl$time,SUl$IC/23.484, lwd=2, col="#b35806")
+points(Mo$time,Mo$IC/32.198, pch=16, cex=1.2, col="#fdb863")
+lines(SMo$time,SMo$IC/32.198, lwd=2, col="#fdb863")
+points(An$time,An$IC/86.592, pch=16, cex=1.2, col="#b2abd2")
+lines(SAn$time,SAn$IC/86.592, lwd=2, col="#b2abd2")
+points(Ge$time,Ge$IC/15.52, pch=16, cex=1.2, col="#542788")
+lines(SGe$time,SGe$IC/15.52, lwd=2, col="#542788")
+
+
+legend("topright",inset = c(- 0.6, 0), c("Tropical","Temperate","Subarctic","Arctic"), lwd=2, lty=1,col=c("#b35806","#fdb863","#b2abd2","#542788"))
+
+
+dev.off()
+
+
+pdf("test.pdf", width=6, height=4)
+plot(SUl$time,SUl$MOM/23.484, lwd=2, col="#b35806",xlim=c(0,400), ylim=c(0,1))
+points(SMo$time,SMo$MOM/32.198, lwd=2, col="#fdb863")
+points(SAn$time,SAn$MOM/86.592, lwd=2, col="#b2abd2")
+points(SGe$time,SGe$MOM/15.52, lwd=2, col="#542788")
+legend("topright",inset = c(- 0.6, 0), c("Tropical","Temperate","Sub-arctic","Arctic"), lwd=2, lty=1,col=c("#b35806","#fdb863","#b2abd2","#542788"))
+dev.off
+
+```
+
+##
+```{R plot}
+pool<-read.csv("Poolsize2.csv")
+p1<-ggplot(pool, aes(x=sample, y=value,fill=sample, color=sample))+geom_bar( stat="identity",size=0.08)+ #geom_smooth(aes(fill=series),alpha=0.2)+
+  facet_wrap(~fraction)+
+scale_fill_manual(values=c("#b35806","#fdb863","#b2abd2","#542788"))+
+scale_color_manual(values=c('white','white','white','white'))+
+theme_linedraw()+ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=10))+theme(strip.background = element_rect(fill="white"),strip.text.x = element_text(size = 10, colour = "black"),axis.text.x=element_text(angle =45, vjust = 0.5))#+theme(axis.text.x=element_text(angle =45, vjust = 0.5))
+p1
+pdf("poolsize2.pdf",width=4, height=2)
+p1
+dev.off()
+```
+
+
+`
+##Supplement figure---salinity test
+
+```{r data}
+ctrl<-read.delim("Rsalt_Ex_ref.txt",header=TRUE)
+fs1<-read.delim("Rsalt_Ex_salttest1.txt",header=TRUE)
+fs2<-read.delim("Rsalt_Ex_salttest2.txt",header=TRUE)
+fs3<-read.delim("Rsalt_Ex_salttest3.txt",header=TRUE)
+fs4<-read.delim("Rsalt_Ex_salttest4.txt",header=TRUE)
+obv<-read.csv("Ultisol_control_gram.csv")
+mend<-read.csv("Ul_test.csv")
+##--------simple data visualization
+ctrl<-ctrl[-(1:2), ]
+fs1<-fs1[-(1:2), ]
+fs2<-fs2[-(1:2), ]
+fs3<-fs3[-(1:2), ]
+fs4<-fs4[-(1:2), ]
+mend<-mend[-(1:1), ]
+
+#------1:1 plot for model comparison
+dpom<-data.frame(matrix(NA, nrow=nrow(mend)))
+dpom$mend<-mend$POM
+dpom$aqua<-ctrl$POM
+dpom$label<-c("POM")
+dpom<-dpom[,-1]
+
+ddom<-data.frame(matrix(NA, nrow=nrow(mend)))
+ddom$mend<-mend$DOM
+ddom$aqua<-ctrl$DOM
+ddom$label<-c("DOM")
+ddom<-ddom[,-1]
+
+dqom<-data.frame(matrix(NA, nrow=nrow(mend)))
+dqom$mend<-mend$QOM
+dqom$aqua<-ctrl$QOM
+dqom$label<-c("QOM")
+dqom<-dqom[,-1]
+
+dmb<-data.frame(matrix(NA, nrow=nrow(mend)))
+dmb$mend<-mend$MB
+dmb$aqua<-ctrl$BA
+dmb$label<-c("MB")
+dmb<-dmb[,-1]
+
+dep<-data.frame(matrix(NA, nrow=nrow(mend)))
+dep$mend<-mend$EP
+dep$aqua<-ctrl$EP
+dep$label<-c("EP")
+dep<-dep[,-1]
+
+dem<-data.frame(matrix(NA, nrow=nrow(mend)))
+dem$mend<-mend$EM
+dem$aqua<-ctrl$EM
+dem$label<-c("EM")
+dem<-dem[,-1]
+
+
+dmom<-data.frame(matrix(NA, nrow=nrow(mend)))
+dmom$mend<-mend$MOM
+dmom$aqua<-ctrl$MOM
+dmom$label<-c("MOM")
+dmom<-dmom[,-1]
+
+dic<-data.frame(matrix(NA, nrow=nrow(mend)))
+dic$mend<-mend$IC
+dic$aqua<-ctrl$IC
+dic$label<-c("IC")
+dic<-dic[,-1]
+
+dtt<-data.frame(matrix(NA, nrow=nrow(mend)))
+dtt$mend<-mend$Tot
+dtt$aqua<-ctrl$Total
+dtt$label<-c("Total")
+dtt<-dtt[,-1]
+
+cpool1<-rbind(ddom, dqom, dpom, dmb, dep, dem,dmom, dtt, dic)
+
+plot1<-ggplot()+geom_point(cpool1, mapping=aes(mend, aqua), size=2, color="#e08214", shape=1)+facet_wrap(~label, nrow=3, scales="free")+geom_abline(slope=1, intercept=0, color="black")+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(text=element_text(size=10))
+
+pdf("model_abline_allpools.pdf",width=7, height=6)
+plot1
+dev.off()
+
+
+```
+
+##Supplement figure---sensitivity test---adding small salinity and fsal---impact of solution chemistry and pools
+
+```{r data}
+ctrl<-read.delim("Rsalt_Ex_ref.txt",header=TRUE)
+fs1<-read.delim("Rsalt_Ex_salttest1_pom.txt",header=TRUE)
+fs2<-read.delim("Rsalt_Ex_salttest2_pom.txt",header=TRUE)
+fs3<-read.delim("Rsalt_Ex_salttest3_pom.txt",header=TRUE)
+fs4<-read.delim("Rsalt_Ex_salttest4_pom.txt",header=TRUE)
+#obv<-read.csv("Ultisol_control_gram.csv")
+#mend<-read.csv("Ul_test.csv")
+##--------simple data visualization
+ctrl<-ctrl[-(1:2), ]
+fs1<-fs1[-(1:2), ]
+fs2<-fs2[-(1:2), ]
+fs3<-fs3[-(1:2), ]
+fs4<-fs4[-(1:2), ]
+
+ctrl<- ctrl[, !names(ctrl) %in% c("mu","pH.1", "FeS", "Calcite","X")]
+fs1<- fs1[, !names(fs1) %in% c("mu","pH.1", "FeS", "Calcite","X")]
+fs2<- fs2[, !names(fs2) %in% c("mu","pH.1", "FeS", "Calcite","X")]
+fs3<- fs3[, !names(fs3) %in% c("mu","pH.1", "FeS", "Calcite","X")]
+fs4<- fs4[, !names(fs4) %in% c("mu","pH.1", "FeS", "Calcite","X")]
+
+#take 1 year % change---response ratio
+
+fs1sum<-log(fs1[365,])-log(ctrl[365,])
+fs2sum<-log(fs2[365,])-log(ctrl[365,])
+fs3sum<-log(fs3[365,])-log(ctrl[365,])
+fs4sum<-log(fs4[365,])-log(ctrl[365,])
+
+fs1sum$lab<-c("salt1")
+fs2sum$lab<-c("salt2")
+fs3sum$lab<-c("salt3")
+fs4sum$lab<-c("salt4")
+
+sum<-rbind(fs1sum, fs2sum, fs3sum, fs4sum)
+
+group1 <- sum[, c("lab","pH","Na","K", "Ca","Mg", "Cl","HCO3","SO4","PO4","NH4")]
+newg1<-reshape2::melt(group1, id.var="lab")
+
+
+
+group2 <- sum[, c("lab","MOM","POM","QOM", "DOM","BA", "EP","EM","IC","Total","SC")]
+newg2<-reshape2::melt(group2, id.var="lab")
+
+
+
+plot1<-ggplot()+geom_bar(newg1, mapping=aes(x=value, y=variable, fill=lab), stat="identity", position="dodge")+ 
+  scale_fill_brewer(palette = "PuOr")+ scale_x_continuous(limits=c(-3,9), breaks=c(-3, 0, 3, 6, 9))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(text=element_text(size=10))
+plot1
+
+pdf("salttest-group1_pom.pdf",width=3.5, height=4)
+plot1
+dev.off()
+
+plot2<-ggplot()+geom_bar(newg2, mapping=aes(x=value, y=variable, fill=lab), stat="identity", position="dodge")+ 
+  scale_fill_brewer(palette = "PuOr")+ 
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(text=element_text(size=10))
+plot2
+
+pdf("salttest-group2_pom.pdf",width=3.5, height=4)
+plot2
+dev.off()
+
+
+plot2<-plot1+geom_boxplot(obv, mapping=aes(x=time, y=IC, group=time), color="black", alpha=0.2, width=16)
+plot3<-plot2+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs1, ymax=fs2), fill="#b2abd2", alpha=0.5)
+plot4<-plot3+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs3, ymax=fs4), fill="#b35806", alpha=0.3)
+plot4 
+
+
+pdf("Ex3_IC_obv.pdf",width=2.2, height=2)
+plot4
+dev.off()
+
+
+
+```
+
+
+
+##TEMPEST test
+```{r data}
+ctrl<-read.delim("Tempest_ctrl_dom.txt",header=TRUE)
+fs1<-read.delim("Tempest_fresh_dom.txt",header=TRUE)
+fs2<-read.delim("Tempest_salt_dom.txt",header=TRUE)
+#fs3<-read.delim("Rsalt_Ex_salttest3_pom.txt",header=TRUE)
+#fs4<-read.delim("Rsalt_Ex_salttest4_pom.txt",header=TRUE)
+#obv<-read.csv("Ultisol_control_gram.csv")
+#mend<-read.csv("Ul_test.csv")
+##--------simple data visualization
+ctrl<-ctrl[-(1:2), ]
+fs1<-fs1[-(1:2), ]
+fs2<-fs2[-(1:2), ]
+
+
+ctrl<- ctrl[, !names(ctrl) %in% c("mu","pH.1", "FeS", "Calcite","X")]
+fs1<- fs1[, !names(fs1) %in% c("mu","pH.1", "FeS", "Calcite","X")]
+fs2<- fs2[, !names(fs2) %in% c("mu","pH.1", "FeS", "Calcite","X")]
+
+#take 1 year % change---response ratio
+
+fs1sum<-log(fs1[365,])-log(ctrl[365,])
+fs2sum<-log(fs2[365,])-log(ctrl[365,])
+
+
+fs1sum$lab<-c("freshwater")
+fs2sum$lab<-c("saltwater")
+
+
+sum<-rbind(fs1sum, fs2sum)
+
+group1 <- sum[, c("lab","Na","K", "Ca","Mg", "Cl","HCO3","SO4","NH4","SC","DO")]
+newg1<-reshape2::melt(group1, id.var="lab")
+newg1$sign<-c("pos")
+newg1[19, 4]<-c("neg")
+newg1[20, 4]<-c("neg")
+
+group2 <- sum[, c("lab","pH","MOM","POM","QOM", "DOM","BA", "EP","EM","IC","Total")]
+newg2<-reshape2::melt(group2, id.var="lab")
+newg2$sign<-c("neg")
+newg2[2, 4]<-c("pos")
+newg2[4, 4]<-c("pos")
+newg2[6, 4]<-c("pos")
+newg2[10, 4]<-c("pos")
+newg2[14, 4]<-c("pos")
+newg2[16, 4]<-c("pos")
+newg2[18, 4]<-c("pos")
+
+plot1<-ggplot()+geom_bar(newg1, mapping=aes(x=value, y=variable, color=lab, fill=sign), stat="identity", position="dodge")+ scale_fill_manual(values=c("white","#b2abd2"))+
+  scale_color_manual(values=c("#e08214","#b2abd2"))+ scale_x_continuous(limits=c(-3,9), breaks=c(-3, 0, 3, 6, 9))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(text=element_text(size=10))
+plot1
+
+pdf("tempest-group1_mom.pdf",width=4, height=4)
+plot1
+dev.off()
+
+plot2<-ggplot()+geom_bar(newg2, mapping=aes(x=value, y=variable, fill=lab), stat="identity", position="dodge")+ 
+ scale_fill_manual(values=c("#e08214","#b2abd2"))+ 
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(text=element_text(size=10))
+plot2
+
+pdf("tempest-legend.pdf",width=4, height=4)
+plot2
+dev.off()
+
+
+plot2<-plot1+geom_boxplot(obv, mapping=aes(x=time, y=IC, group=time), color="black", alpha=0.2, width=16)
+plot3<-plot2+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs1, ymax=fs2), fill="#b2abd2", alpha=0.5)
+plot4<-plot3+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs3, ymax=fs4), fill="#b35806", alpha=0.3)
+plot4 
+
+
+pdf("Ex3_IC_obv.pdf",width=2.2, height=2)
+plot4
+dev.off()
+
+
+
+```
+

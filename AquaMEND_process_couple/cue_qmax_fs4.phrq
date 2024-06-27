@@ -1,0 +1,396 @@
+DATABASE ../database/redox.dat
+
+TITLE  MEND and redox coupling
+#full process coupling
+
+CALCULATE_VALUES
+
+SC_T25
+ -start
+ 10 sc25 = SC/(1+0.021*(temperature-25))   #in us/cm
+ 20 SAVE sc25
+ -end
+ 
+fsl1    ##more sensitive (green)
+ -start
+ 10 fsl1 = 1 / (1.0 + exp(1.68 * (log10(CALC_VALUE("SC_T25")/1000)+0.26))) #log(ds/m)
+ 40 SAVE fsl1
+ -end
+
+fsl2     ##medium (purple)
+ -start
+ 10 fsl2 = 1 / (1.0 + exp(2.28 * (log10(CALC_VALUE("SC_T25")/1000)-0.60)))  #log(ds/m)
+ 40 SAVE fsl2
+ -end
+
+
+fsl3     ##medium (red)
+ -start
+ 10 fsl3 = 1 / (1.0 + exp(2.23 * (log10(CALC_VALUE("SC_T25")/1000)-1.11)))  #log(ds/m)
+ 40 SAVE fsl3
+ -end
+
+fsl4    ##more resistant (black)
+ -start
+ 10 fsl4 = 1 / (1.0 + exp(4.03 * (log10(CALC_VALUE("SC_T25")/1000)-1.78)))  #log(ds/m)
+ 40 SAVE fsl4
+ -end
+
+
+SOLUTION 1    
+units umol/L        #3.774L total volume  ##based on clay fresh system
+pH    7  charge
+temperature 	 25
+water         1.887   #default is 1 kg
+
+P           5
+Amm         38
+Na          114
+Ca          183
+Cl          133 
+Sulfate     4 
+K           28
+Mg          79
+C(4)        9  
+Nitrate        0
+Ferric       50
+Alanine      52
+Cysteine     52
+Glycine      52
+Glutamine    52
+Threonine    52
+Tyrosine     52
+Ozero        600    redoxO2(g) -0.7
+Methane      1
+Sulfide      0.1
+
+  SAVE SOLUTION 1
+END
+
+GAS_PHASE 1 fixed volume gas phase
+  -fixed_volume
+  -volume	   0.9  #(L)  calculate air pore space
+  temperature 	 25.0
+  redoxO2(g)   0.29
+  redoxCH4(g)  0.0
+  redoxCO2(g)  0.000316
+  SAVE GAS_PHASE 1
+END
+
+
+USE SOLUTION 1
+USE GAS_PHASE 1
+
+EXCHANGE_SPECIES
+ X- = X-; log_k 0     #semicolon is logical end of line
+ X- + AmmH4+ = AmmH4X;  log_k  0.25   #define the half-reactions of ion change
+ 2X- + Ca+2  = CaX2;    log_k  0.4    $logK's relative 
+ 2X- + Mg+2  = MgX2;    log_k  0.5
+ #X- + H+  = HX;       log_k   0.1
+ X- + Na+  = NaX;      log_k  0.0
+ X- + K+  = KX;       log_k  0.2
+
+EXCHANGE 1   #exchanger in equilibirium 
+#exchanger has a fixed CEC--adjust amount or aqueous concentration
+  X         16  #exchanger amount in mol
+  #AmmH4X   16
+  #CaX2     4 
+  #MgX2     4
+  #HX       4
+  #NaX      4
+  -equilibrate with solution 1
+  -exchange_gammas   true
+ 
+ 
+EQUILIBRIUM_PHASES 1
+  redoxO2(g)        -1.2  1       #fixed partial pressure approach
+  redoxCalcite      0  0.001     #CaCo3
+  redoxFeS(ppt)     0  0.001     #FeS
+  Hydroxyapatite    0  0.001     #Ca5(PO4)3OH
+  redoxPyrite       0  0.001     #FeS2
+  redoxFe(OH)3(a)   0  2   
+
+
+SURFACE 1
+
+ Hfo_wOH 2e-4  600  280  #site density (per nm2), SSA (m2/g), gram
+ Hfo_sOH 5e-6
+-Donnan 1e-8   #defuse layer thickness
+
+##surface binding site(name), SSA_per_gram, grams, (optional: diffusion coefficient for the surface)
+  H_a   3.837E-02  3.417E+04     80  ##gram of SOM for exchange
+  H_b   3.837E-02; H_c   3.837E-02; H_d  3.837E-02
+  H_e   1.919E-02; H_f   1.919E-02; H_g  1.919E-02; H_h  1.919E-02
+  H_ab  6.378E-02; H_ad  6.378E-02; H_af  6.378E-02; H_ah  6.378E-02
+  H_bc  6.378E-02; H_be  6.378E-02; H_bg  6.378E-05; H_cd  6.378E-05
+  H_cf  6.378E-02; H_ch  6.378E-02; H_de  6.378E-05; H_dg  6.378E-05
+ -equilibrate with solution 1
+
+
+USE SOLUTION 1
+KINETICS  Decomposition  ##in mgC per g soil, redox reaction stoichiometry based on per biomassC
+-cvode
+
+BA
+   -m0   0.52
+   -formula CH2O 0.0  
+   -parms 0.87 0.25 0.001 0.4 0.02   #parm(1)=Vd, parm(2)=Kd, parm(3)=PEP, parm(4)=CUE, parm(5)=kb
+
+OAC
+   -m0  0.001
+   -formula CH2O 0.0   
+   -parms  0.01  0.25
+
+Aero
+   -formula CH2O 0.0   Ozero2  1.44   HCO3 -1.44  #C 2.44
+   -parms  0.2   0.55  0.05   #Vmax, Koc, Ko2
+
+SulR
+   -formula CH2O 0.0   SulfateO4-2  4.5   HSulfide-  -4.5  HCO3 -9    #C 10
+   -parms  0   0.5   0.5   #Vmax, Koc, Kso4
+Meth
+   -formula CH2O 0.0     MethaneH4 -20.24  HCO3 20.24   #C 41.48
+   -parms  0   0.6  0.1   #Vmax, Koc, KI_O2
+
+POM
+   -m0   4.71
+   -formula CH2O 0.0  
+   -parms 36.8  50  0  0.5   #vp1, kp1, Ip1, gD-fraction of dead BA to D
+MOM
+   -m0   15.9
+   -formula CH2O 0.0
+   -parms 0.4  250 0.5   #vm, km, fD- fraction of decomposed p1/p2 to D
+DOM
+   -m0   0.48
+   -formula CH2O 0.0
+   -parms  0.49  0.25  0
+
+QOM
+   -m0   1.767
+   -formula CH2O 0.0
+   -parms 1.2  0.006  6   #adsorption constant, Qmax, desorption constant
+   
+EP
+   -m0   0.052
+   -formula CH2O 0.0
+   -parms  0.001
+
+EM
+   -m0   0.052
+   -formula CH2O 0.0
+   -parms  0.001
+
+respiration
+   -m0   0
+   -formula CH2O 0.0 
+   -parms  0.4
+Tot
+   -m0   23.484
+   -formula CH2O 0.0
+
+Salt  ##saltwater ion stoichiometry
+   -m0   0.001
+   -formula  CH2O 0.0   Cl-  -20  Sulfate  -5   Na+  -25   K+  -1    Ca+2  -2  Mg+2  -4   HCO3  -3  Nitrate -5 
+   -parms 0.01  ## mol per gram soil per day
+
+##track carbon flow among differnet e-accepting processes
+Caero
+   -m0   0
+   -formula CH2O 0.0
+Csulr
+   -m0   0
+   -formula CH2O 0.0
+Cmeth
+   -m0   0
+   -formula CH2O 0.0
+
+   -steps 365 in 365 steps #day
+  INCREMENTAL_REACTIONS true
+
+
+RATES
+BA
+   -start
+     2 ft = CALC_VALUE("fsl4")
+    10 mDOM= kin("DOM")
+    20 bio = kin("BA")
+    30 uptake= parm(1)* bio * mDOM/(parm(2)+mDOM)   #parm(1)=Vd, parm(2)=Kd
+    40 put(uptake, 1) #microbil uptake flux                                      
+    50 decay=bio*parm(5)     #parm(3)=pEP=pEM (exoemzyme production rate); 0.1*Vd=biomass decay rate
+    60 put(decay, 2)                                           ##maintenance respiration
+    70 pexo = parm(3)*bio   #exoenzyme production enzyme production rate=0.1*Vd
+    80 put(pexo, 3)                                             ##mortality
+    90 rate = get(1)*parm(4)*ft-get(2)-get(3)-get(3)+ft*get(11)*get(11)/(get(11)+get(12)+get(13))+get(12)*get(12)/(get(11)+get(12)+get(13))+get(13)*get(13)/(get(11)+get(12)+get(13)) #parm(4)=CUE
+    100 save -rate * time 
+   -end
+
+OAC
+   -start
+    10 mDOM= kin("DOM")
+    20 rate = parm(1)* get(4)+parm(2)* get(2)-get(11)*2.44*get(11)/(get(11)+get(12)+get(13))-get(12)*10*get(12)/(get(11)+get(12)+get(13))-get(13)*41.48*get(13)/(get(11)+get(12)+get(13))  #C stoichiometry for redox reactions
+    30 put(rate, 14)
+    100 save -rate * time 
+   -end
+
+Aero
+  -start
+   10 mDOM= kin("OAC")/12
+   20 bio = kin("BA")/12
+   30 DO= mol("Ozero2")*1000
+   40 donor = mDOM/(parm(2)+mDOM)
+   50 accp = DO/(parm(3)+DO)
+   60 rate = parm(1)* bio * donor * accp
+   70 put(rate, 11)
+   80 final = rate*get(11)/(get(11)+get(12)+get(13))
+  100 save -final* time
+  -end
+
+SulR
+  -start
+   10 mDOM= kin("OAC")/12
+   20 bio = 0.6*kin("BA")/12
+   30 DO = mol("Ozero2")*1000
+   40 SO = mol("SulfateO4-2")*1000
+   50 donor = mDOM/(parm(2)+mDOM)
+   60 acc = SO/(parm(3)+SO)
+   70 rate = parm(1)* bio * donor * acc
+   80 put(rate, 12)
+   90 final = rate*get (12)/(get(11)+get(12)+get(13))
+  100 save -final * time
+  -end
+
+Meth
+  -start
+   # 2 TK=temperature+273.15
+   # 5 R = 8.3145/1000.0  #J/mol·K to kJ/mol K
+   # 8 dG = dG0-R*TK*log((act('HCO3-')*act('MethaneH')/act('Acetate-')))  #calculate dG0
+   10 mDOM= kin("OAC")/12
+   11 if(kin("OAC")<= 0.15) then mDOM=0
+   20 bio = 0.2*kin("BA")/12
+   30 DO = mol("Ozero2")*1000
+   50 donor = mDOM/(parm(2)+mDOM)
+   60 inhib = parm(3)/(DO+parm(3))
+   70 rate =  parm(1)* bio * donor 
+   80 put(rate, 13)
+   90 final = rate*get (13)/(get(11)+get(12)+get(13))
+  100 save -final * time
+  -end
+
+POM
+   -start
+    10 mPOM = kin("POM")
+    20 ep = kin("EP")
+    30 deco = parm(1) * ep * mPOM/(parm(2)+mPOM) # parm(1)=Vp, parm(2)=Kp
+    40 put (deco, 4)  #POM decomposition
+    50 rate = (1-parm(4))*get(2)-get(4)  #parm(3)=input, parm(4)=gD, fraction of decayed biomass C going to DOM pool
+    100 save -rate * time
+   -end
+
+MOM
+   -start
+    10 mMOM = kin("MOM")
+    20 em = kin("EM")
+    30 flux = parm(1) * em * mMOM /(parm(2)+ mMOM) # parm(1)=VM, parm(2)=KM
+    40 put(flux,5)  #MOM decomposition flux
+    50 rate = (1-parm(3))*get(4)-get(5)  #parm(3)=fD_fraction of decomposed P to D
+    100 save -rate*time
+   -end
+
+DOM
+   -start
+    10 rate = (1-parm(1))*get(4)+parm(2)* get(2)+get(5)+(get(8)+get(9))-get(1)-(get(6)-get(7))-get(14)
+    100 save -rate* time
+   -end
+QOM
+   -start
+     2 st = CALC_VALUE ("SC_T25")
+     5 Qmax = parm(1)*(1+0.0155*st)  #Qmax increase with salinity
+     8 kde= parm(2)/parm(3)   #KBA decrease---Kde increases with salinity
+    10 mQOM = kin("QOM")
+    20 D = kin("DOM")
+    30 flux1 = parm(2) * (1-mQOM/Qmax)* D 
+    40 put(flux1,6)  #adsorption flux
+    50 flux2 = kde * (mQOM/Qmax) 
+    60 put(flux2,7)  #desorption flux
+    70 rate = get(6)-get(7)
+    100 save -rate * time
+   -end
+
+EP
+   -start
+    10 ep = kin("EP")
+    20 flux1 = parm(1)*ep #enzyme decay
+    30 put (flux1,8)
+    40 rate = get(3)-get(8)
+    100 save -rate * time
+   -end
+
+EM
+   -start
+    10 em = kin("EM")
+    20 flux1= parm(1)* em
+    30 put (flux1,9)
+    40 rate = get(3)-get(9)
+    100  save -rate * time
+   -end
+
+respiration
+   -start
+     2 ft = CALC_VALUE("fsl4")
+    10 rate = (1- parm(1)*ft)*get(1)+(2-ft)*(get(11)*1.44*get(11)/(get(11)+get(12)+get(13))+get(12)*9*get(12)/(get(11)+get(12)+get(13))-get(13)*20.24*get(13)/(get(11)+get(12)+get(13)))*12 #parm(1)=CUE
+    20 put (rate, 10)
+    30 save -rate * time
+   -end
+Tot
+   -start
+    10 rate = -get(10)-(GAS('redoxCH4(g)')+tot('CH4'))*12
+    20 save -rate * time
+   -end
+
+Salt
+   -start
+    10 salt=kin("salt")
+    20 rate = parm(1)*(0.10-salt)   ## The incoming concentration is important
+    30 save -rate * time
+   -end
+
+Caero
+   -start
+    10 rate = get(11)*2.44*get (11)/(get(11)+get(12)+get(13))
+    30 save -rate * time
+   -end
+Csulr
+   -start
+    10 rate = get(12)*10*get (12)/(get(11)+get(12)+get(13))
+    30 save -rate * time
+   -end
+Cmeth
+   -start
+    10 rate = get(13)*41.48*get (13)/(get(11)+get(12)+get(13))
+    30 save -rate * time
+   -end
+
+
+
+
+SELECTED_OUTPUT
+  -RESET false
+  -FILE cue_qmax_fs4.txt
+
+USER_PUNCH
+  -start
+  -heading Time pH  Ozero HS CH4 CO2g CO2 SC  fsl1  fsl2  fsl3  fsl4 POM MOM QOM DOM BA EP EM IC Total OrgAcid Aero SulR Meth Caero Csulr Cmeth Na  K  Ca  Mg  PO4  Cl  SO4 NH4 HCO3 FeS Pyrite 
+  10 PUNCH SIM_TIME
+  20 PUNCH -la("H+")
+  30 PUNCH mol("Ozero2")  tot('Sulfide')
+  40 PUNCH GAS('redoxCH4(g)')+tot('CH4')  GAS('redoxCO2(g)')  tot('C(4)')
+  50 PUNCH CALC_VALUE ("SC_T25")
+  60 PUNCH CALC_VALUE("fsl1")  CALC_VALUE("fsl2")  CALC_VALUE("fsl3")  CALC_VALUE("fsl4")
+  70 PUNCH kin('POM') kin('MOM') kin('QOM') kin('DOM') kin('BA') kin('EP') kin('EM') 
+  80 PUNCH kin('respiration') kin("Tot") kin('OAC') kin('Aero')  kin('SulR')  kin('Meth')
+  90 PUNCH kin('Caero') kin('Csulr') kin('Cmeth')
+  100 PUNCH tot("Na")  tot("K")  mol("Ca+2")  tot("Mg") tot("P")  tot("Cl")  tot("Sulfate") tot ("Amm")  tot("C(4)")
+  110 PUNCH equi("redoxFeS(ppt)")  equi("redoxPyrite")
+  -end
+END
+  

@@ -1,0 +1,305 @@
+---
+title: "rphreeqc_plotting"
+author: "Jianqiu Zheng"
+date: "7/20/2021"
+output: html_document
+---
+
+
+###aqueous phase disturbance---salinity sensitivity
+```{R plotting}
+rm(list = ls ())
+library(tidyverse)
+library(dplyr)
+library(reshape)
+
+#====creating the long-term SS figure (with and without chemistry)====
+#the figure includes both weak and strong feedbacks where pH presented as a negative or positive rate modifier
+
+ref<-read.table("salinity_ref.txt", header= TRUE)
+ph1<-read.table("salinity_red00.txt", header= TRUE) 
+ph2<-read.table("salinity_red25.txt", header= TRUE) 
+ph3<-read.table("salinity_red50.txt", header= TRUE) 
+ph4<-read.table("salinity_inc50.txt", header= TRUE) 
+ph5<-read.table("salinity_inc100.txt", header= TRUE) 
+ph6<-read.table("salinity_inc200.txt", header= TRUE) 
+
+ref<-ref[-c(1:1),]
+ph1<-ph1[-c(1:1),]
+ph2<-ph2[-c(1:1),]
+ph3<-ph3[-c(1:1),]
+ph4<-ph4[-c(1:1),]
+ph5<-ph5[-c(1:1),]
+ph6<-ph6[-c(1:1),]
+#===general plotting=====
+
+tot<-data.frame(time=ref$Time)
+tot$ph1<-ph1$DOM/ref$DOM-1
+tot$ph2<-ph2$DOM/ref$DOM-1
+tot$ph3<-ph3$DOM/ref$DOM-1
+tot$ph4<-ph4$DOM/ref$DOM-1
+tot$ph5<-ph5$DOM/ref$DOM-1
+tot$ph6<-ph6$DOM/ref$DOM-1
+
+tot<-reshape2::melt(tot, id.var=c("time"))
+
+plot1<-ggplot(tot, aes(x = time,y = value, group = variable)) +
+  scale_x_continuous(name = expression(paste("Time (day) "))) +
+  geom_hline(yintercept=0, color="black", linetype="dashed")+
+  scale_y_continuous(name = 'DOM', limits=c(-2,2)) + geom_line(aes(col=variable),size=1)+
+  scale_color_manual( values =c("#542788","#8073ac","#b2abd2","#fdb863","#e08214","#b35806"))
+plot2<-plot1+theme_linedraw()+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=16))
+plot2
+pdf("MEND_salinity_DOM.pdf", width=4.5, height=3)
+plot2
+dev.off()
+
+
+
+totIC<-data.frame(time=ref$Time)
+totIC$ph1<-(ph1$IC-ref$IC)/ref$IC
+totIC$ph2<-(ph2$IC-ref$IC)/ref$IC
+totIC$ph3<-(ph3$IC-ref$IC)/ref$IC
+totIC$ph4<-(ph4$IC-ref$IC)/ref$IC
+totIC$ph5<-(ph5$IC-ref$IC)/ref$IC
+totIC$ph6<-(ph6$IC-ref$IC)/ref$IC
+
+totIC<-melt(totIC, id.var=c("time"))
+
+plot3<-ggplot(totIC, aes(x = time,y = value, group = variable)) +
+  scale_x_continuous(name = expression(paste("Time (day) "))) +
+  geom_hline(yintercept=0, color="black", linetype="dashed")+
+  scale_y_continuous(name = 'IC', limits=c(-0.5,0.5)) + geom_line(aes(col=variable),size=1)+
+  scale_color_manual( values =c("#542788","#8073ac","#b2abd2","#fdb863","#e08214","#b35806"))
+plot4<-plot3+theme_linedraw()+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=16))
+plot4
+
+pdf("MEND_salinity_IC.pdf", width=4.5, height=3)
+plot4
+dev.off()
+
+
+totB<-data.frame(time=ref$Time)
+totB$ph1<-ph1$BA/ref$BA-1
+totB$ph2<-ph2$BA/ref$BA-1
+totB$ph3<-ph3$BA/ref$BA-1
+totB$ph4<-ph4$BA/ref$BA-1
+totB$ph5<-ph5$BA/ref$BA-1
+totB$ph6<-ph6$BA/ref$BA-1
+
+totB<-melt(totB, id.var=c("time"))
+
+plot5<-ggplot(totB, aes(x = time,y = value, group = variable)) +
+  scale_x_continuous(name = expression(paste("Time (day) "))) +
+  geom_hline(yintercept=0, color="black", linetype="dashed")+
+  scale_y_continuous(name = 'BA', limits=c(-4,4)) + geom_line(aes(col=variable),size=1)+
+  scale_color_manual( values =c("#542788","#8073ac","#b2abd2","#fdb863","#e08214","#b35806"))
+plot6<-plot5+theme_linedraw()+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=16))
+plot6
+
+pdf("MEND_salinity_Biomass.pdf", width=4.5, height=3)
+plot6
+dev.off()
+
+totP<-data.frame(time=ref$Time)
+totP$ph1<-ph1$POM/ref$POM-1
+totP$ph2<-ph2$POM/ref$POM-1
+totP$ph3<-ph3$POM/ref$POM-1
+totP$ph4<-ph4$POM/ref$POM-1
+totP$ph5<-ph5$POM/ref$POM-1
+totP$ph6<-ph6$POM/ref$POM-1
+
+
+totP<-melt(totP, id.var=c("time"))
+
+plot7<-ggplot(totP, aes(x = time,y = value, group = variable)) +
+  scale_x_continuous(name = expression(paste("Time (day) "))) +
+  geom_hline(yintercept=0, color="black", linetype="dashed")+
+  scale_y_continuous(name = 'POM', limits=c(-0.5,0.5)) + geom_line(aes(col=variable),size=1)+
+  scale_color_manual( values =c("#542788","#8073ac","#b2abd2","#fdb863","#e08214","#b35806"))
+plot8<-plot7+theme_linedraw()+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=16))
+plot8
+
+pdf("MEND_salinity_POM.pdf", width=4.5, height=3)
+plot8
+dev.off()
+
+
+totM<-data.frame(time=ref$Time)
+totM$ph1<-ph1$MOM/ref$MOM-1
+totM$ph2<-ph2$MOM/ref$MOM-1
+totM$ph3<-ph3$MOM/ref$MOM-1
+totM$ph4<-ph4$MOM/ref$MOM-1
+totM$ph5<-ph5$MOM/ref$MOM-1
+totM$ph6<-ph6$MOM/ref$MOM-1
+
+
+totM<-melt(totM, id.var=c("time"))
+
+plot9<-ggplot(totM, aes(x = time,y = value, group = variable)) +
+  scale_x_continuous(name = expression(paste("Time (day) "))) +
+  geom_hline(yintercept=0, color="black", linetype="dashed")+
+  scale_y_continuous(name = 'MOM', limits=c(-0.1,0.1)) + geom_line(aes(col=variable),size=1)+
+  scale_color_manual( values =c("#542788","#8073ac","#b2abd2","#fdb863","#e08214","#b35806"))
+plot10<-plot9+theme_linedraw()+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=16))
+plot10
+
+pdf("MEND_salinity_MOM.pdf", width=4.5, height=3)
+plot10
+dev.off()
+
+
+
+totQ<-data.frame(time=ref$Time)
+totQ$ph1<-ph1$QOM/ref$QOM-1
+totQ$ph2<-ph2$QOM/ref$QOM-1
+totQ$ph3<-ph3$QOM/ref$QOM-1
+totQ$ph4<-ph4$QOM/ref$QOM-1
+totQ$ph5<-ph5$QOM/ref$QOM-1
+totQ$ph6<-ph6$QOM/ref$QOM-1
+
+
+totQ<-melt(totQ, id.var=c("time"))
+
+plot9<-ggplot(totQ, aes(x = time,y = value, group = variable)) +
+  scale_x_continuous(name = expression(paste("Time (day) "))) +
+  geom_hline(yintercept=0, color="black", linetype="dashed")+
+  scale_y_continuous(name = 'MOM', limits=c(-1,1)) + geom_line(aes(col=variable),size=1)+
+  scale_color_manual( values =c("#542788","#8073ac","#b2abd2","#fdb863","#e08214","#b35806"))
+plot10<-plot9+theme_linedraw()+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=16))
+plot10
+
+pdf("MEND_salinity_QOM.pdf", width=4.5, height=3)
+plot10
+dev.off()
+
+
+tot<-data.frame(time=ref$Time)
+tot$ph1<-(ph1$EP+ph1$EM)/(ref$EP+ref$EM)-1
+tot$ph2<-(ph2$EP+ph2$EM)/(ref$EP+ref$EM)-1
+tot$ph3<-(ph3$EP+ph3$EM)/(ref$EP+ref$EM)-1
+tot$ph4<-(ph4$EP+ph4$EM)/(ref$EP+ref$EM)-1
+tot$ph5<-(ph5$EP+ph5$EM)/(ref$EP+ref$EM)-1
+tot$ph6<-(ph6$EP+ph6$EM)/(ref$EP+ref$EM)-1
+
+tot<-reshape2::melt(tot, id.var=c("time"))
+
+plot1<-ggplot(tot, aes(x = time,y = value, group = variable)) +
+  scale_x_continuous(name = expression(paste("Time (day) "))) +
+  geom_hline(yintercept=0, color="black", linetype="dashed")+
+  scale_y_continuous(name = 'totalEM', limits=c(-2,2)) + geom_line(aes(col=variable),size=1)+
+  scale_color_manual( values =c("#542788","#8073ac","#b2abd2","#fdb863","#e08214","#b35806"))
+plot2<-plot1+theme_linedraw()+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=16))
+plot2
+pdf("MEND_salinity_totalenzyme.pdf", width=4.5, height=3)
+plot2
+dev.off()
+  
+
+tot<-data.frame(time=ref$Time)
+tot$ph1<-(ph1$MOM+ph1$QOM)/(ref$MOM+ref$QOM)-1
+tot$ph2<-(ph2$MOM+ph2$QOM)/(ref$MOM+ref$QOM)-1
+tot$ph3<-(ph3$MOM+ph3$QOM)/(ref$MOM+ref$QOM)-1
+tot$ph4<-(ph4$MOM+ph4$QOM)/(ref$MOM+ref$QOM)-1
+tot$ph5<-(ph5$MOM+ph5$QOM)/(ref$MOM+ref$QOM)-1
+tot$ph6<-(ph6$MOM+ph6$QOM)/(ref$MOM+ref$QOM)-1
+
+tot<-reshape2::melt(tot, id.var=c("time"))
+
+plot1<-ggplot(tot, aes(x = time,y = value, group = variable)) +
+  scale_x_continuous(name = expression(paste("Time (day) "))) +
+  geom_hline(yintercept=0, color="black", linetype="dashed")+
+  scale_y_continuous(name = 'totalEM', limits=c(-0.2,0.2)) + geom_line(aes(col=variable),size=1)+
+  scale_color_manual( values =c("#542788","#8073ac","#b2abd2","#fdb863","#e08214","#b35806"))
+plot2<-plot1+theme_linedraw()+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=16))
+plot2
+pdf("MEND_salinity_totalenzyme.pdf", width=4.5, height=3)
+plot2
+dev.off()
+
+
+      
+```
+
+##load obvdata
+```{r IC}
+
+library(ggpubr)
+obv<-read.csv("Ultisol_control.csv")
+
+# Create a transparent theme object
+transparent_theme <- theme(
+  axis.title.x = element_blank(),
+  axis.title.y = element_blank(),
+  axis.text.x = element_blank(), 
+  axis.text.y = element_blank(),
+  axis.ticks = element_blank(),
+  panel.grid = element_blank(),
+  axis.line = element_blank(),
+  panel.background = element_rect(fill = "transparent",colour = NA),
+  plot.background = element_rect(fill = "transparent",colour = NA))
+
+# fix number of decimal
+scaleFUN <- function(x) sprintf("%.2f", x)
+
+totIC<-data.frame(time=ref$Time)
+totIC$ref<-ref$IC
+totIC$ph1<-ph1$IC
+totIC$ph2<-ph2$IC
+totIC$ph3<-ph3$IC
+totIC$ph4<-ph4$IC
+totIC$ph5<-ph5$IC
+totIC$ph6<-ph6$IC
+totIC$ph7<-ph7$IC
+totIC$ph8<-ph8$IC
+totIC<-melt(totIC, id.var=c("time"))
+
+
+plot1<-ggplot(totIC, aes(x = time,y = value, group = variable)) +
+  scale_x_continuous(name = expression(paste("Time (day) ")),limits=c(0,400)) +
+  scale_y_continuous(name = 'IC', limits=c(0,5), labels=scaleFUN) + geom_line(aes(col=variable),size=1)+
+  scale_color_manual( values =c("black","#542788","#8073ac","#b2abd2","#d8daeb","#fee0b6","#fdb863","#e08214","#b35806"))  
+plot2<-plot1+theme_linedraw()+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=16))
+
+bp<-ggplot(obv, aes(x = time,y = IC)) +geom_point(color="#7f3b08")+ scale_x_continuous(limits=c(0,400))+scale_y_continuous(limits=c(0,5))+transparent_theme
+
+bp_grob<-ggplotGrob(bp)#create the external graphical elements (called a grop in Grid terminology)
+ymin<-0
+ymax<-5
+xmin<--0
+xmax<-400
+plot3<-plot2+annotation_custom(grob=bp_grob, xmin =xmin-30, xmax=xmax+25, ymin=ymin-0.4, ymax=ymax+0.35)
+#plot2<-plot1+theme_linedraw()+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=20))
+print(plot3)
+
+
+pdf("MEND_dis_IC_obv.pdf", width=4.5, height=3)
+plot3
+dev.off()
+
+
+
+tot<-data.frame(time=ref$Time)
+tot$ph1<-ph1$Total/ref$Total-1
+tot$ph2<-ph2$Total/ref$Total-1
+tot$ph3<-ph3$Total/ref$Total-1
+tot$ph4<-ph4$Total/ref$Total-1
+tot$ph5<-ph5$Total/ref$Total-1
+tot$ph6<-ph6$Total/ref$Total-1
+
+tot<-reshape2::melt(tot, id.var=c("time"))
+
+plot1<-ggplot(tot, aes(x = time,y = value, group = variable)) +
+  scale_x_continuous(name = expression(paste("Time (day) "))) +
+  geom_hline(yintercept=0, color="black", linetype="dashed")+
+  scale_y_continuous(name = 'TotalOM', limits=c(-0.1,0.1)) + geom_line(aes(col=variable),size=1)+
+  scale_color_manual( values =c("#542788","#8073ac","#b2abd2","#fdb863","#e08214","#b35806"))
+plot2<-plot1+theme_linedraw()+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=16))
+plot2
+pdf("MEND_salinity_total.pdf", width=4.5, height=3)
+plot2
+dev.off()
+
+
+
+```

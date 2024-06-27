@@ -1,0 +1,187 @@
+---
+title: "MENDsimulations"
+author: "Jianqiu Zheng"
+date: "7/15/2021"
+output: html_document
+---
+
+
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(ggpubr)
+library(scales)
+library(MASS) # to access Animals data sets
+library(ggallin)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(stringr)
+library(ggpmisc)
+theme_pubr()
+```
+
+
+###boxplot
+
+## CO2
+```{r data}
+
+df<-data.frame(matrix(NA, nrow=3))
+df$site<-c("1Wet","2Tran","3Up")
+df$DO<-c(0.05,0.08,0.04)
+df$Me<-c(0.006,0.003,0.001)
+df<-df[,-1]
+
+
+plot1<-ggplot(df, mapping=aes(site, DO, fill=site))+geom_bar(stat="identity")+
+  #scale_fill_manual(values=c("#7f3b08","#b35806","#e08214"))+
+  scale_fill_manual(values=c("#542788","#8073ac","#b2abd2"))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(text=element_text(size=14))+xlab("Time (Day)")+ylab("DO consumption (mM day-1)")
+plot1
+
+pdf("DO rate.pdf",width=3.2, height=2.5)
+plot1
+dev.off()    
+  
+```
+
+
+
+
+
+
+##Figure 1 Comparing effect of 3 exchange component
+
+```{r data}
+obv<-read.csv("upland_timeseries_O2_distribution.csv")
+
+n<-519
+
+test<-obv %>% group_by(mean= (row_number()-1) %/%n) %>%
+ summarize(mean=mean(average_O2_uM))
+
+test2<-obv %>% group_by(mean= (row_number()-1) %/%n) %>%
+ summarize(mean=mean(days_elapsed))
+
+new<-data.frame(matrix(0, ncol=2, nrow=71))
+new$X1<-pull(test2,mean)
+new$X2<-pull(test,mean)
+colnames(new)<-c("time", "DO")
+
+write.csv(new, "oxy_upland.csv")  
+  
+```
+
+##Figure 2 GHG model data
+
+```{r data}
+ref<-read.delim("owc_upland_DO.txt",header=TRUE)
+low<-read.delim("owc_upland_DO_low.txt",header=TRUE)
+high<-read.delim("owc_upland_DO_high.txt",header=TRUE)
+
+ref<-ref[-1, ]
+low<-low[-1, ]
+high<-high[-1, ]
+
+
+df<-data.frame(matrix(NA, nrow=nrow(ref)))
+df$time<-ref$Time
+df$upr<-low$Ozero*1000+0.03
+df$ref<-ref$Ozero*1000+0.03
+df$lwr<-high$Ozero*1000+0.03
+df<-df[,-1]
+
+
+obv1<-read.csv("oxy_transition.csv")
+colnames(obv1)<-c('time','DO')
+obv1$DO<-obv1$DO/1000
+
+plot1<-ggplot()+geom_line(df, mapping=aes(time, ref),linewidth=1, color="#8073ac")+ 
+  scale_x_continuous(limits=c(0,50))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(text=element_text(size=14))+xlab("Time (Day)")+ylab("DO (mM)")
+plot2<-plot1+geom_point(obv1, mapping=aes(time,DO),color="#542788")
+plot3<-plot2+geom_ribbon(data=df, mapping=aes(x=time, ymin=lwr, ymax=upr), fill="#b2abd2", alpha=0.5)
+
+
+pdf("uplandDO.pdf",width=3, height=2.5)
+plot3
+dev.off()  
+  
+```
+
+
+
+###methane figure
+```{r data}
+ref<-read.delim("owc_upland_DO.txt",header=TRUE)
+low<-read.delim("owc_upland_DO_low.txt",header=TRUE)
+high<-read.delim("owc_upland_DO_high.txt",header=TRUE)
+
+ref<-ref[-1, ]
+low<-low[-1, ]
+high<-high[-1, ]
+
+
+df<-data.frame(matrix(NA, nrow=nrow(ref)))
+df$time<-ref$Time
+df$upr<-low$CH4*1000
+df$ref<-ref$CH4*1000
+df$lwr<-high$CH4*1000
+df<-df[,-1]
+
+
+obv1<-read.csv("CH4_transition.csv")
+colnames(obv1)<-c('time','CH4')
+obv1$CH4<-obv1$CH4/1000
+
+plot1<-ggplot()+geom_line(df, mapping=aes(time, ref),linewidth=1, color="#7f3b08")+ 
+  scale_x_continuous(limits=c(0,50))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(text=element_text(size=14))+xlab("Time (Day)")+ylab("CH4 (mM)")
+plot2<-plot1+geom_point(obv1, mapping=aes(time,CH4),color="#7f3b08")
+plot3<-plot2+geom_ribbon(data=df, mapping=aes(x=time, ymin=lwr, ymax=upr), fill="#7f3b08", alpha=0.3)
+
+
+pdf("uplandCH4.pdf",width=3, height=2.5)
+plot3
+dev.off()  
+  
+```
+
+
+## CO2
+```{r data}
+ref<-read.delim("owc_upland_DO.txt",header=TRUE)
+low<-read.delim("owc_upland_DO_low.txt",header=TRUE)
+high<-read.delim("owc_upland_DO_high.txt",header=TRUE)
+
+ref<-ref[-1, ]
+low<-low[-1, ]
+high<-high[-1, ]
+
+
+df<-data.frame(matrix(NA, nrow=nrow(ref)))
+df$time<-ref$Time
+df$upr<-low$IC*1000/44
+df$ref<-ref$IC*1000/44
+df$lwr<-high$IC*1000/44
+df<-df[,-1]
+
+obv2<-read.csv("CO2_transition.csv")
+colnames(obv2)<-c('time','CO2')
+obv2$CO2<-obv2$CO2/1000
+
+plot1<-ggplot()+geom_line(df, mapping=aes(time, ref),linewidth=1, color="#fdb863")+ 
+  scale_x_continuous(limits=c(0,50))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(text=element_text(size=14))+xlab("Time (Day)")+ylab("CO2(mM)")
+plot2<-plot1+geom_point(obv2, mapping=aes(time,CO2),color="#fdb863")
+plot3<-plot2+geom_ribbon(data=df, mapping=aes(x=time, ymin=lwr, ymax=upr), fill="#fdb863", alpha=0.5)
+
+pdf("uplandCO2.pdf",width=3, height=2.5)
+plot3
+dev.off()    
+  
+```
+
+
+

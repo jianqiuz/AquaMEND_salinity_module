@@ -1,0 +1,94 @@
+   Input file: closed_redox_petest.phrq
+  Output file: closed_redox_petest.phrq.out
+Database file: ../database/redox.dat
+
+------------------
+Reading data base.
+------------------
+
+	SOLUTION_MASTER_SPECIES
+	SOLUTION_SPECIES
+	PHASES
+	EXCHANGE_MASTER_SPECIES
+	EXCHANGE_SPECIES
+	SURFACE_MASTER_SPECIES
+	SURFACE_SPECIES
+	RATES
+	END
+------------------------------------
+Reading input data for simulation 1.
+------------------------------------
+
+	DATABASE ../database/redox.dat
+	TITLE  MEND and redox coupling
+	CALCULATE_VALUES
+	SC_T25
+	 start
+	 10 sc25 = SC/(1+0.021*(temperature-25))   #in us/cm
+	 20 SAVE sc25
+	 end
+	fsl1    ##more sensitive (green)
+	 start
+	 10 fsl1 = 1 / (1.0 + exp(1.68 * (log10(CALC_VALUE("SC_T25")/1000)+0.26))) #log(ds/m)
+	 40 SAVE fsl1
+	 end
+	fsl2     ##medium (purple)
+	 start
+	 10 fsl2 = 1 / (1.0 + exp(2.28 * (log10(CALC_VALUE("SC_T25")/1000)-0.60)))  #log(ds/m)
+	 40 SAVE fsl2
+	 end
+	fsl3     ##medium (red)
+	 start
+	 10 fsl3 = 1 / (1.0 + exp(2.23 * (log10(CALC_VALUE("SC_T25")/1000)-1.11)))  #log(ds/m)
+	 40 SAVE fsl3
+	 end
+	fsl4    ##more resistant (black)
+	 start
+	 10 fsl4 = 1 / (1.0 + exp(4.03 * (log10(CALC_VALUE("SC_T25")/1000)-1.78)))  #log(ds/m)
+	 40 SAVE fsl4
+	 end
+	SOLUTION 1    
+	units umol/L        #3.774L total volume  ##based on clay fresh system
+	pH    7  charge
+	temperature 	 25
+	water         1.887   #default is 1 kg
+	redox O(-2)/O(0)
+	P           5
+	Amm         38
+	Na          114
+	Ca          183
+	Cl          133 
+	Sulfate     4 
+	K           28
+	Mg          79
+	C(4)        9  
+	Nitrate        0
+	Ferric       50
+	Alanine      52
+	Cysteine     52
+	Glycine      52
+	Glutamine    52
+	Threonine    52
+	Tyrosine     52
+	Methane      1
+	Sulfide      0.1
+	  SAVE SOLUTION 1
+	END
+-----
+TITLE
+-----
+
+  MEND and redox coupling
+
+-------------------------------------------
+Beginning of initial solution calculations.
+-------------------------------------------
+
+Initial solution 1.	
+
+WARNING: Could not reduce equation to primary and secondary species that are in the model.  Species: e-.
+WARNING: Could not rewrite redox couple equation for O(-2)/O(0)
+	 Possibly missing data for one of the redox states.
+WARNING: Using pe instead of O(-2)/O(0).
+ERROR: Program terminating due to input errors.
+Stopping.

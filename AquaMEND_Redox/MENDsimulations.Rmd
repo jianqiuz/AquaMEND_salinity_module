@@ -1,0 +1,325 @@
+---
+title: "MENDsimulations"
+author: "Jianqiu Zheng"
+date: "7/15/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(FME)
+library(deSolve)
+##solving simple MEND model
+pars<- list (Vd=10,Vp=41)
+solveMEND <- function(pars,times){
+ derivs <- function(t, state, pars){
+      with(as.list(c(state, pars)),{
+        #default paramters
+   # Carbon use effciency
+        Vm = 0.4
+        #Vp=41.4
+        CUE = 0.4
+        kD = 0.25
+        kP = 50  #half saturation constant for POM
+        kM = 250
+        kb = 0.1
+        Kads = 0.006 
+        Kdes = 0.001 
+        Qmax = 0.5
+        pEP=0.001 
+        pEM=0.001
+        rEP=1e-3 
+        rEM=1e-3 
+        fD=0.5 
+        gD=0.5
+        Ipom=0  #Input  (mgC g soil day-1)
+        Idom=0  #Input
+    F1 <- Vd* MB *DOM /( kD + DOM)  ## microbial uptake 
+    F2 <- Vp* EP * POM / (kP + POM) # POM decomposition
+    F3 <- Vm * EM * MOM / (kM + MOM) #MOAM decomposition
+    F6 <- Kads * DOM *(1- QOM/ Qmax) ##adsorption
+    F7 <- Kdes * QOM/Qmax  ##desorption
+    F8 <- (1- pEP- pEM)* MB *kb #microbial biomass decay (biomass decay rate=0.1*growth rate)
+    F9ep <- pEP * MB   #enzyme production (maintaince respiration=0.1*total respiration)
+    F9em <- pEM * MB 
+    F10ep <- rEP * EP  #enzyme decay
+    F10em <- rEM * EM
+    
+    dPOM <- Ipom+(1 - gD) * F8- F2
+    dMOM <- (1 - fD) * F2 - F3
+    dMB <- F1*CUE - F8 - (F9em + F9ep) # Microbial growth= microbial uptake *CUE
+    dDOM <- Idom+fD * F2 + gD * F8 + F3 + (F10em + F10ep)- F1 - (F6 - F7)
+    dQOM <- F6 - F7
+    dEP <- F9ep - F10ep
+    dEM <- F9em - F10em
+    dIC <- F1*(1-CUE)   #CO2 fllux
+    dTot <- -F1*(1-CUE)
+    return(list(c(dPOM, dMOM, dQOM, dDOM, dMB,dEP,dEM, dIC, dTot)))
+      })
+ }
+
+times=seq(0,400, by=1)
+#state<-c(POM=3.25, MOM=27.97, QOM=0, DOM=0.21, MB=0.64, EP=0.064, EM=0.064, IC=0, Tot=32.198)#Mollisol
+#state<-c(POM=4.25, MOM=11.04, QOM=0, DOM=0.17, MB=0.05, EP=0.005, EM=0.005, IC=0, Tot=15.52)#Gelisol
+state<-c(POM=4.71, MOM=15.903, QOM=1.767, DOM=0.148, MB=0.52, EP=0.052, EM=0.052, IC=0, Tot=23.484)#Ultisol
+#state<-c(POM=20.06, MOM=64.86, QOM=0, DOM=0.64, MB=0.86, EP=0.086, EM=0.086, IC=0, Tot=86.592)#Andisol
+
+#solved the mode
+  ox<-ode(y=state, times=times, func=derivs, parms=pars)
+
+data.frame(ox[,1:10])
+}
+ 
+output<-solveMEND(pars) 
+
+plot(output$time,output$IC, type = "l",xlab = "Time (h)", ylab = "Concentration (mM)", lwd=3,col="#7f3b08", xlim=c(0,300), ylim=c(0,6))
+```
+
+##Data fitting to optimize
+```{r data}
+
+Data<-read.csv("Ultisol_control_gram.csv",header=TRUE)
+
+Objective <- function(x, parset = names(x)) {
+ pars[parset] <- x
+ tout <- seq(0, 300, by = 1) ## output times
+ out <- solveMEND(pars, tout)
+ return(modCost(model = out, obs = Data))## Model cost
+}
+
+
+#parameters are constrained to be >0
+print(system.time(Fit <- modFit(p = c(Vd=0.5,Vp=20),
+ f = Objective, lower = c(0,0))))
+#CUE range 0.25 to 0.75
+
+summary(Fit)
+
+```
+
+
+##graph model fit
+```{r plot}
+
+pars[c("Vd","kb")]<-Fit$par
+#pars<- list (vmax1=1,vmax2=46,vmax3=69)
+output<-solveMEND(pars)  
+
+mfit<-as.data.frame(output[, 1:10])
+colnames(mfit) <- c("time", "POM","MOM","QOM","DOM","MB","EP","EM","IC","Tot")
+head(mfit)
+
+plot(mfit$time, mfit$POM)
+
+
+#write.csv(mfit, "Ul_test.csv")
+
+#pdf("Andisol_control.pdf", width=6, height=4)
+
+plot(Data$time,Data$IC, xlab = "Time (d)", ylab = "Respiration (mgC g-1 soil)", pch=16, cex=1.2,col="#e08214", xlim=c(0,400), ylim=c(0,5),cex.lab=1.2, cex.axis=1.2)
+lines(mfit$time, mfit$IC, lwd=2, col="#e08214")
+
+plot(Data$time,Data$MB, xlab = "Time (d)", ylab = "Biomass (mmolC g-1 soil)", pch=16, cex=1.2,col="#e08214", xlim=c(0,400),ylim=c(0,1),cex.lab=1.2, cex.axis=1.2)
+lines(mfit$time, mfit$MB, lwd=2, col="#e08214")
+
+
+plot(Data$time,Data$DOM, xlab = "Time (d)", ylab = "DOC (mmolC g-1 soil)", pch=16, cex=1.2,col="#e08214", xlim=c(0,400),ylim=c(0,1),cex.lab=1.2, cex.axis=1.2)
+lines(mfit$time, mfit$DOM, lwd=2, col="#e08214")
+
+
+```
+
+##graph all soils
+```{r plot}
+
+Ul<-read.csv("Ultisol_control.csv",header=TRUE)
+Ge<-read.csv("Gelisol_control.csv",header=TRUE)
+Mo<-read.csv("Mollisol_control.csv",header=TRUE)
+An<-read.csv("Andisol_control.csv",header=TRUE)
+
+SUl<-read.csv("Ultisol_simulations.csv",header=TRUE)
+SGe<-read.csv("Gelisol_simulations.csv",header=TRUE)
+SMo<-read.csv("Mollisol_simulations.csv",header=TRUE)
+SAn<-read.csv("Andisol_simulations.csv",header=TRUE)
+
+
+
+pdf("4soils.pdf", width=6, height=4)
+par(xpd = T, mar = par()$mar + c(0,0,0,10))
+plot(Ul$time,Ul$IC/23.484, xlab = "Time (d)", ylab = "Respiration (mgC g-1 C)", pch=16, cex=1.2,col="#b35806", xlim=c(0,400), ylim=c(0,0.2),cex.lab=1.2, cex.axis=1.2)
+lines(SUl$time,SUl$IC/23.484, lwd=2, col="#b35806")
+points(Mo$time,Mo$IC/32.198, pch=16, cex=1.2, col="#fdb863")
+lines(SMo$time,SMo$IC/32.198, lwd=2, col="#fdb863")
+points(An$time,An$IC/86.592, pch=16, cex=1.2, col="#b2abd2")
+lines(SAn$time,SAn$IC/86.592, lwd=2, col="#b2abd2")
+points(Ge$time,Ge$IC/15.52, pch=16, cex=1.2, col="#542788")
+lines(SGe$time,SGe$IC/15.52, lwd=2, col="#542788")
+
+
+legend("topright",inset = c(- 0.6, 0), c("Tropical","Temperate","Subarctic","Arctic"), lwd=2, lty=1,col=c("#b35806","#fdb863","#b2abd2","#542788"))
+
+
+dev.off()
+
+
+pdf("test.pdf", width=6, height=4)
+plot(SUl$time,SUl$MOM/23.484, lwd=2, col="#b35806",xlim=c(0,400), ylim=c(0,1))
+points(SMo$time,SMo$MOM/32.198, lwd=2, col="#fdb863")
+points(SAn$time,SAn$MOM/86.592, lwd=2, col="#b2abd2")
+points(SGe$time,SGe$MOM/15.52, lwd=2, col="#542788")
+legend("topright",inset = c(- 0.6, 0), c("Tropical","Temperate","Sub-arctic","Arctic"), lwd=2, lty=1,col=c("#b35806","#fdb863","#b2abd2","#542788"))
+dev.off
+
+```
+
+##
+```{R plot}
+pool<-read.csv("Poolsize2.csv")
+p1<-ggplot(pool, aes(x=sample, y=value,fill=sample, color=sample))+geom_bar( stat="identity",size=0.08)+ #geom_smooth(aes(fill=series),alpha=0.2)+
+  facet_wrap(~fraction)+
+scale_fill_manual(values=c("#b35806","#fdb863","#b2abd2","#542788"))+
+scale_color_manual(values=c('white','white','white','white'))+
+theme_linedraw()+ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=10))+theme(strip.background = element_rect(fill="white"),strip.text.x = element_text(size = 10, colour = "black"),axis.text.x=element_text(angle =45, vjust = 0.5))#+theme(axis.text.x=element_text(angle =45, vjust = 0.5))
+p1
+pdf("poolsize2.pdf",width=4, height=2)
+p1
+dev.off()
+```
+
+
+```{R plot}
+pool<-read.csv("nutnet.csv")
+pw<-data.frame(pH=pool$Obv)
+pw$no<-pool$No_OL
+pw$om<-pool$OL
+pw<-melt(pw, id.var=c("pH"))
+
+# fix number of decimal
+scaleFUN <- function(x) sprintf("%.1f", x)
+
+p1<-ggplot(pw, aes(x=pH, y=value, color=variable))+geom_point()+ 
+  geom_smooth(method=lm, aes(fill=variable))+scale_color_manual(values=c("#8073ac","#b35806"))+
+scale_fill_manual(values=c("#8073ac","#b35806"))+ scale_x_continuous(name = 'Observed pH',labels=scaleFUN) + scale_y_continuous(name = 'Predicted pH',labels=scaleFUN)+ geom_abline(intercept=0,slope=1, color="black", linetype="dashed")+
+theme_linedraw()+ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=14))+theme(strip.background = element_rect(fill="white"),strip.text.x = element_text(size = 14, colour = "black"))#+theme(axis.text.x=element_text(angle =45, vjust = 0.5))
+p1
+
+pdf("nutnetpH.pdf",width=4, height=2.5)
+p1
+dev.off()
+```
+
+
+```{R plot}
+pka<-read.csv("pKas.csv")
+
+# fix number of decimal
+scaleFUN <- function(x) sprintf("%.1f", x)
+
+p1<-ggplot(pka, aes(x=pKa))+geom_histogram(binwidth=1,color="#b35806", fill="white")+ scale_y_continuous(name = 'Frequency')+
+theme_linedraw()+ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=16))+theme(strip.background = element_rect(fill="white"),strip.text.x = element_text(size = 16, colour = "black"))#+theme(axis.text.x=element_text(angle =45, vjust = 0.5))
+p1
+
+pdf("pKa.pdf",width=4, height=2.5)
+p1
+dev.off()
+```
+
+##pH sensitivity of exoenzymes
+```{R plot}
+pool<-read.csv("Cellobiohydrolase.csv")
+# fix number of decimal
+scaleFUN <- function(x) sprintf("%.1f", x)
+
+p1<-ggplot(pool, aes(x=pH, y=Activity))+geom_point(color="#b35806")+ 
+  geom_smooth(method=loess, color="#b35806", fill="#b35806")+geom_vline(xintercept=7,color="black", linetype="dashed")+geom_vline(xintercept=6,color="black", linetype="dashed")+geom_vline(xintercept=5,color="black", linetype="dashed")+geom_vline(xintercept=4,color="black", linetype="dashed")+
+scale_x_continuous(name = 'Observed pH',limits=c(2,12), breaks=c(2,4,6,8,10,12)) + scale_y_continuous(name = 'Relative activity',labels=scaleFUN)+ 
+theme_linedraw()+ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=12))+theme(strip.background = element_rect(fill="white"),strip.text.x = element_text(size = 12, colour = "black"))#+theme(axis.text.x=element_text(angle =45, vjust = 0.5))
+p1
+
+pdf("CellopH.pdf",width=3, height=2)
+p1
+dev.off()
+```
+
+
+
+##soil pH 
+```{R plot}
+pool<-read.csv("soilph.csv")
+
+
+# fix number of decimal
+scaleFUN <- function(x) sprintf("%.1f", x)
+
+p1<-ggplot(pool, aes(x=pH, y=value, color=soil))+geom_point()+ 
+  geom_smooth(method=loess,aes(fill=NA))+scale_color_manual(values=c("#b2abd2","#8073ac","#542788"))+
+scale_fill_manual(values=c("#b2abd2","#8073ac","#542788"))+ scale_x_continuous(name = 'Observed pH',limits=c(2,12), breaks=c(2,4,6,8,10,12)) + scale_y_continuous(name = 'Relative activity',labels=scaleFUN)+ geom_vline(xintercept=7,color="black", linetype="dashed")+geom_vline(xintercept=6,color="black", linetype="dashed")+geom_vline(xintercept=5,color="black", linetype="dashed")+geom_vline(xintercept=4,color="black", linetype="dashed")+
+theme_linedraw()+ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=12))+theme(strip.background = element_rect(fill="white"),strip.text.x = element_text(size = 12, colour = "black"))+theme(legend.position="none")#+theme(axis.text.x=element_text(angle =45, vjust = 0.5))
+p1
+
+pdf("soilpH.pdf",width=3, height=2)
+p1
+dev.off()
+```
+
+##soil pH 
+```{R plot}
+def1<-read.csv("def1.csv")
+def2<-read.csv("def2.csv")
+def3<-read.csv("def3.csv")
+def4<-read.csv("def4.csv")
+def5<-read.csv("def5.csv")
+
+test<-rbind(def1, def2, def3, def4, def5)
+
+
+# fix number of decimal
+scaleFUN <- function(x) sprintf("%.1f", x)
+
+p1<-ggplot(test, aes(x=mu, y=pH, color=level))+geom_point()+ 
+  geom_smooth(method=loess,aes(fill=NA))+scale_color_manual(values=c("#fee0b6","#fdb863","#e08214","#b35806","#7f3b08"))+geom_hline(yintercept=5.42,color="black", linetype="dashed")+
+scale_fill_manual(values=c("#fee0b6","#fdb863","#e08214","#b35806","#7f3b08"))+ scale_x_continuous(name = 'Ionic strength (mmol/L)') + scale_y_continuous(name = 'pH',labels=scaleFUN)+ 
+theme_linedraw()+ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=14))+theme(strip.background = element_rect(fill="white"),strip.text.x = element_text(size = 14, colour = "black"))+theme(legend.position="none")#+theme(axis.text.x=element_text(angle =45, vjust = 0.5))
+p1
+
+pdf("muPH.pdf",width=4, height=2.5)
+p1
+dev.off()
+```
+
+
+```{r fph}
+#====pH response function====
+pH<-seq(2,12,0.01)
+fpHref<-10^(-0.2235*pH^2+2.7727*pH -8.6)
+f3<-fpHref/max(fpHref)
+
+f2<-(pH-4)*(pH-10)/((pH-4)*(pH-10)-(pH-7)^2)
+
+ph1<-seq(2,7,0.01)
+fph1<-1.02/(1.02+10^6*exp(-2.5*ph1))
+ph2<-seq(7.01,12,0.01)
+fph2<-1.02/(1.02+10^6*exp(-2.5*(14-ph2)))
+
+data1<-data.frame(pH=ph1)
+data1$fpH1<-fph1
+
+data2<-data.frame(pH=ph2)
+data2$fpH1<-fph2
+
+allf<-rbind(data1, data2)
+allf$fpH2<-f2
+allf$fpH3<-f3
+
+fpHs<-melt(allf, id.var=c("pH"))
+
+plot1<-ggplot(fpHs, aes(x = pH,y = value, color=variable)) +
+  scale_x_continuous(name = 'pH', breaks=c(0,2,4,6,8,10,12,14)) +
+  scale_y_continuous(name = 'Relative activity', limits=c(0,1)) + geom_line(aes(color=variable),size=1)+
+  scale_color_manual(values =c("#fee0b6","#e08214","#7f3b08"))
+plot2<-plot1+theme_linedraw()+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())+theme(text = element_text(size=14))
+plot2
+
+pdf("fpH.pdf",width=5, height=2.8)
+plot2
+dev.off()
+```

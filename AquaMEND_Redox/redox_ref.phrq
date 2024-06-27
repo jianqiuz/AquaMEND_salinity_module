@@ -1,0 +1,273 @@
+DATABASE ../database/cybernetic.dat
+
+TITLE Complete redox ladder
+
+CALCULATE_VALUES
+fpH
+-start
+ 10 pH = -la("H+")
+ 20 if pH < 7.0 then fpH = 1.02 / (1.0 + 1.0e6 * exp(-2.5 * pH))
+ 30 if pH >= 7.0 then fpH = 1.02 / (1.0 + 1.0e6 * exp(-2.5 * (14.0 - pH)))
+ 40 if pH < 4.0 then fpH = 0.0
+ 50 if pH > 10.0 then fpH = 0.0
+ 60 SAVE fpH
+-end
+
+
+SOLUTION 1 Soil microcosm 
+#unit mM
+ pH           6.00
+ #pe          5.4
+ Nitrate     10.0
+ Sulfate     3.0
+ Nitrite     0.5
+ Fulvic      20.0
+ C(4)        1.0 
+ Na          5.0 charge
+ K           1.0
+ Cl          1.0
+ Ozero       0.0025
+ Amm         0.2
+ Ferrous     0.1   #adding Ferrous will increase SO4 concentration (?abiotic reaction)
+ Ferric      1e-12 redoxFe(OH)3(a) 0.0
+ SAVE SOLUTION 1
+END
+
+GAS_PHASE 1 fixed volume gas phase
+  -fixed_volume
+  -volume 	   0.44000  #(L)
+  temperature 	 25.0
+
+  redoxCH4(g) 0.0
+  redoxCO2(g) 0.0
+  redoxN2(g)  0.0
+  redoxO2(g) 0.0
+  redoxH2S(g) 0.0
+  SAVE GAS_PHASE 1
+END
+
+USE SOLUTION 1
+USE GAS_PHASE 1
+
+EQUILIBRIUM_PHASES 1
+  redoxFe(OH)3(a)  0.0  6E-03  #saturation index  amount(moles of the phase in the phase assemblage)
+  
+SURFACE 1
+Hfo_w redoxFe(OH)3(a)  0.2  1E4    #sies_per_mole   specific_area_per_mole 
+Hfo_s redoxFe(OH)3(a)  0.005 1E4
+  H_a   6.396E-04  3.417E+6      0.901
+  H_b   6.396E-04; H_c   6.396E-04; H_d  6.396E-04
+  H_e   3.198E-04; H_f   3.198E-04; H_g  3.198E-04; H_h  3.198E-04
+  H_ab  1.063E-04; H_ad  1.063E-04; H_af  1.063E-04; H_ah  1.063E-04
+  H_bc  1.063E-04; H_be  1.063E-04; H_bg  1.063E-04; H_cd  1.063E-04
+  H_cf  1.063E-04; H_ch  1.063E-04; H_de  1.063E-04; H_dg  1.063E-04
+  -equil 1
+
+USE SOLUTION 1
+KINETICS
+  -cvode
+  Res
+     -formula Fulvic 6.1 Ozero2 7.2  HCO3 -7.2  H2O -3.0
+     -parms  0.000005  0.02  0.0002  #Vmax, Koc, Ko2
+
+  NaRAk
+     -formula Fulvic 14.28 NitrateO3- 18.57   NitriteO2- -18.67  HCO3 -9.29
+     -parms  0.000012  0.25  0.001  1.0E-5
+
+  NiRAk
+     -formula Fulvic 14.28 NitriteO2- 18.86   Nzero2 -9.43  HCO3 -9.29
+     -parms  0.000012  0.25  0.004  1.0E-5
+  
+  FeRAk
+    -formula Ferrous+2 -150.1676 H -166.4385 HCO3 -37.5419 Ferric+3 150.1676 H2O 72.0838 Fulvic 21.2709
+    -parms   0.000012 0.25 0.0062  1.0E-8   1.0E-8
+  
+  SRAk
+     -formula Fulvic 25 SulfateO4-2 22.5   HSulfide- -22.5 HCO3 -44.9  H2O -3
+     -parms  0.000004  0.25  0.001  1.0E-7   1.0E-7
+  
+  MeGAk
+    -formula HCO3 -101.1836 MethaneH4 -101.1836 H 1.5 H2O 98.1836 Fulvic 103.6836
+    -parms  5E-07   0.25  1.0E-7 
+  NaRAbd
+    -m0  0.00002
+    -formula CH2O 0.0
+    -parms  0.00000028
+  NaRAb
+    -formula CH2O 0.0
+    -m0  0.00002
+  FeRAbd
+    -m0  0.00002
+    -formula CH2O 0.0
+    -parms  0.00000028
+  FeRAb
+    -formula CH2O 0.0
+    -m0  0.00002
+  SRAbd
+    -formula Fulvic -5
+    -m0  0.00002
+    -parms  0.00000028
+  SRAb
+     -formula CH2O 0.0
+     -m0  0.00002
+  
+  MeGAbd
+    -m0  0.00002
+    -formula CH2O 0.0
+    -parms  2.8E-07
+
+  MeGAb
+    -formula CH2O 0.0
+    -m0  0.00002
+
+-steps 2.6e7 in 3000 steps # seconds
+
+INCREMENTAL_REACTIONS true
+
+
+RATES
+Res
+  -start
+   5 ft = CALC_VALUE("fpH")
+   10 bio = 3*(kin("NaRAb")+ kin("FeRAb")+kin("SRAb"))
+   20 donor =mol("Fulvic")/(parm(2)+mol("Fulvic"))
+   30 accp = mol("Ozero2")/(parm(3)+mol("Ozero2"))
+   40 rate = -parm(1)* bio*donor*accp*ft
+   50 put(rate, 1)
+  100 save rate * time
+  -end
+NaRAk
+  -start
+   5 ft = CALC_VALUE("fpH")
+   10 bio = kin("NaRAb")
+   20 donor = mol("Fulvic")/(parm(2)+mol("Fulvic"))
+   30 accp = mol("NitrateO3-")/(parm(3)+mol("NitrateO3-"))
+   40 inhib = parm(4)/(parm(4) + mol("Ozero2"))
+   50 rate = -parm(1)* bio*donor*accp*inhib*ft
+   60 put(rate, 2)
+  100 save rate * time
+  -end
+
+
+NiRAk
+ -start
+   5 ft = CALC_VALUE("fpH")
+   10 bio = 0.8*kin("NaRAb")
+   20 donor = mol("Fulvic")/(parm(2)+mol("Fulvic"))
+   30 accep = mol("NitriteO2-")/(parm(3)+ mol("NitriteO2-"))
+   40 inhib = parm(4)/(parm(4) + mol("Ozero2"))
+   50 rate = -parm(1)* bio * donor * accep*inhib*ft
+   60 put(rate, 3)
+   100 save rate * time
+ -end
+
+FeRAk
+  -start
+   5 ft = CALC_VALUE("fpH")
+   10 bioma = kin("FeRAb")
+   20 donor = (mol("Fulvic") - 1.0e-15) /(parm(2) + mol("Fulvic") - 1.0e-15)
+   30 msurf = mol("Hfo_wOH") + mol("Hfo_sOH") - 1.0e-15
+   40 accep = 1.0/(1.0 + bioma/msurf / parm(3))
+   50 inhib1 = parm(4)/(parm(4) + mol("Ozero2"))
+   60 inhib2 = parm(5)/(parm(5) + mol("NitrateO3-"))
+   70 rate = -parm(1) * bioma * donor * accep * inhib1*inhib2 * ft
+   80 put(rate, 4)
+  100 save rate * time
+  -end
+
+SRAk
+  -start
+    5 ft = CALC_VALUE("fpH")
+   10 bio = kin("SRAb")
+   20 donor = mol("Fulvic")/(parm(2)+mol("Fulvic"))
+   30 accp = mol("SulfateO4-2")/(parm(3)+mol("SulfateO4-2"))
+   40 inhib1 = parm(4)/(parm(4) + mol("Ozero2"))
+   50 inhib2 = parm(5)/(parm(5)+mol("NitriteO3-"))
+   60 rate = -parm(1)* bio*donor*accp*inhib1*inhib2*ft
+   70 put(rate, 5)
+  100 save rate * time
+  -end
+
+MeGAk
+  -start
+    5 ft = CALC_VALUE("fpH")
+   10 bio = kin("MeGAb")
+   20 donor = mol("Fulvic")/(parm(2)+mol("Fulvic"))
+   30 accp = 1
+   40 inhib = parm(3)/(parm(3)+mol("NitriteO2-"))
+   50 rate = -parm(1)* bio*donor*accp*inhib*ft
+   60 put(rate, 6)
+  100 save rate * time
+  -end
+
+NaRAbd
+ -start
+  5 ft = CALC_VALUE("fpH")
+ 10 rate = ft * parm(1) * kin("NaRAb")^2
+ 15 put(rate, 7)
+ 20 save rate * time
+ -end
+
+NaRAb
+ -start
+ 10 rate =  get(2) + get(3) - get(7) 
+ 20 save rate * time
+ -end
+
+FeRAbd
+ -start
+  5 ft = CALC_VALUE("fpH")
+ 10 rate = ft * parm(1) * kin("FeRAb")^1.2
+ 15 put(rate, 8)
+ 20 save rate * time
+ -end
+
+FeRAb
+ -start
+ 10 rate =  get(4) - get(8) 
+ 20 save rate * time
+ -end
+
+SRAbd
+-start
+10 decay =parm (1)* kin("SRAb")^1.6
+20 put (decay, 9)
+100 save rate* time
+-end
+
+SRAb
+-start
+10 rate = get(5)-get(9)
+100 save rate * time
+-end
+
+MeGAbd
+-start
+10 decay =parm (1)* kin("MeGAb")^1.2
+20 put (decay, 10)
+100 save rate* time
+-end
+
+MeGAb
+-start
+10 rate = get(6)-get(10)
+100 save rate * time
+-end
+
+
+SELECTED_OUTPUT
+-RESET false
+-FILE redox_ref.txt
+
+USER_PUNCH
+-start
+-heading Time(hour) OC NO3 NO2 Fe2 SO4 Fe(OH)3a CH4tot CO2tot N2tot O2tot H2Stot NaRbio FeRbio SRAbio Methbio pH fpH
+10 PUNCH SIM_TIME/3600
+20 PUNCH tot('Fulvic') tot('Nitrate') tot('Nitrite') tot('Ferrous') tot('Sulfate') 
+30 PUNCH equi('redoxFe(OH)3(a)')
+40 PUNCH GAS('redoxCH4(g)')+tot('CH4')  GAS('redoxCO2(g)')+tot('C(4)') GAS('redoxN2(g)')+tot('Nzero') GAS('redoxO2(g)')+tot('Ozero') GAS('redoxH2S(g)')+tot('H2S')   
+50 PUNCH kin('NaRAb') kin('FeRAb') kin('SRAb') kin('MeGAb')
+60 PUNCH -la("H+")
+70 PUNCH CALC_VALUE('fpH')
+-end
+END

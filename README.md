@@ -14,3 +14,22 @@ In the .bash_profile under the home directory: export PATH="/Users/Jianqiu/Appli
 Step 2: Copy and paste the database file (redox.dat) under the database directory
 
 The soil solution chemistry is specified in the SOLUTION, GAS-PHASE, EXCHANGE, and SURFACE blocks. The reaction network is implemented using the KINETICS and RATES blocks. Salinity response functions are defined within the CALCULATE_VALUES block. Detailed guidelines for model implementation in PHREEQC are available in the user manual https://pubs.usgs.gov/tm/06/a43/
+
+### File Dictionary
+
+- **`AquaMEND_microbial_mechanisms`**: Contains model setup and simulations for testing various microbial process-based hypotheses related to soil salinization, including microbial mortality, carbon use efficiency (CUE), extracellular enzyme activity, and other microbial mechanisms.
+
+- **`AquaMEND_process_couple`**: Includes model setup and simulations for exploring coupled biotic-abiotic processes and their interactions.
+
+- **`AquaMEND_Redox`**: Focuses on model setup and simulations to evaluate shifts among key redox processes, such as aerobic respiration, sulfate reduction, and methanogenesis.
+
+- **`AquaMEND_salinity_buffer`**: Contains model setup and simulations to assess the impact of three different cation exchange and surface complexation processes on salinity buffering.
+
+- **`AquaMEND_sorption`**: Provides model setup and simulations for investigating the effects of salinity on dissolved organic matter (DOM) sorption and desorption processes.
+
+- **`data`**: Includes datasets used to develop salinity response functions and evaluate salinity buffering capacity.
+
+- **`database`**: Contains the `.dat` file required by PHREEQC for model execution. 
+
+Let me know if you’d like further refinements!
+

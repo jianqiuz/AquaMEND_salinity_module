@@ -2,7 +2,7 @@
 **This is a process-based modeling framework that couples soil solution chemistry with microbial carbon cycling reactions to study the impacts of soil salinization.**
 
 
-![Figure 1](https://github.com/user-attachments/assets/63459800-2746-4d78-9597-5af35544ec17) {width=600px }
+![Figure 1](https://github.com/user-attachments/assets/63459800-2746-4d78-9597-5af35544ec17) {width=400px}
 
 This conceptual model is implemented numerically into the open-source geochemical program PHREEQC 3.0 (Parkhurst and Appelo, 2013).
 

@@ -1,0 +1,124 @@
+
+DATABASE ../database/redox.dat
+
+TITLE simulate soil solution
+
+#Estimate soil solution dynamics in response to salt water addition
+#based on lab experiment from van Dijk 2015 Biogeochemistry
+
+
+CALCULATE_VALUES
+SC_T25
+-start
+10 sc25 = SC/(1+0.021*(temperature-25))
+20 SAVE sc25
+-end
+
+SOLUTION 1
+units umol/L   #3.774L total volume
+pH    7  charge
+temperature 	 25
+water         1.887   #default is 1 kg
+
+
+P           79.76
+Amm         420
+Na          19590
+Ca          2070
+Cl          22700
+Sulfate     1190 
+K           580
+Mg          2410
+C(4)        5.11  
+Nitrate        0
+Ferric       1.3
+Alanine      394
+Cysteine     394
+Glycine      394
+Glutamine    394
+Threonine    394
+Tyrosine     394
+
+
+  SAVE SOLUTION 1
+END
+ 
+GAS_PHASE 1 
+  -pressure	    1.01  #(L)  calculate air pore space
+  temperature 	 25.0
+  redoxO2(g)   0.29
+  redoxCH4(g)  0.0
+  redoxCO2(g)  0.000316
+  SAVE GAS_PHASE 1
+END
+
+USE SOLUTION 1
+USE GAS_PHASE 1
+
+
+EXCHANGE_SPECIES
+ X- = X-; log_k 0     #semicolon is logical end of line
+ X- + AmmH4+ = AmmH4X;  log_k  0.25   #define the half-reactions of ion change
+ 2X- + Ca+2  = CaX2;    log_k  0.5    $logK's relative 
+ 2X- + Mg+2  = MgX2;    log_k  0.4
+ X- + H+  = HX;         log_k  1.0
+ X- + Na+  = NaX;       log_k  0.0
+ X- + K+  = KX;         log_k  0.1
+
+EXCHANGE 1   #exchanger in equilibirium 
+#exchanger has a fixed CEC--adjust amount or aqueous concentration
+  X-       10.5  #exchanger amount in mol
+  AmmH4X   10.5
+  -equilibrate with solution 1
+  -exchange_gammas   true
+ 
+EQUILIBRIUM_PHASES 1
+  redoxFe(OH)3(a) 0.0 0.02
+
+SURFACE 1
+#site density (per nm2), SSA (m2/g), gram
+Hfo_wOH 2e-4  600  1.8 #0.02mol
+Hfo_sOH 5e-6
+-Donnan 1e-8   #defuse layer thickness
+
+##surface binding site(name), SSA_per_gram, grams, (optional: diffusion coefficient for the surface)
+  H_a   3.837E-02  3.417E+04     84  ##gram of SOM for exchange
+  H_b   3.837E-02; H_c   3.837E-02; H_d  3.837E-02
+  H_e   1.919E-02; H_f   1.919E-02; H_g  1.919E-02; H_h  1.919E-02
+  H_ab  6.378E-02; H_ad  6.378E-02; H_af  6.378E-02; H_ah  6.378E-02
+  H_bc  6.378E-02; H_be  6.378E-02; H_bg  6.378E-05; H_cd  6.378E-05
+  H_cf  6.378E-02; H_ch  6.378E-02; H_de  6.378E-05; H_dg  6.378E-05
+  -equilibrate with solution 1
+
+KINETICS  Decomposition  
+-cvode
+
+Salt
+   -m0   0   #model not sensitivity
+   -formula  Cl-  -50  Sulfate  -5   Na+  -45   K+  -0.8    Ca+2  -2.5  Mg+2  -4   HCO3  -3
+   -parms 0.035  # velocity for water to pass through soil
+
+   -steps 200 in 200 steps #day
+  INCREMENTAL_REACTIONS true
+
+RATES
+Salt
+   -start
+    10 salt=kin("salt")
+    20 rate = parm(1)*(0.005-salt)   ## The incoming concentration is important
+    30 save -rate * time
+   -end
+
+SELECTED_OUTPUT
+-RESET false
+-FILE  peat_salt_high.txt
+
+USER_PUNCH
+-start
+-heading pH  Na  K  Ca  Mg  PO4  Cl  SO4 NH4 HCO3 sc FeS Pyrite Calcite  CaPO4  Fe3PO4  CaMgCO3
+10 PUNCH -la("H+")
+20 PUNCH tot("Na")  tot("K")  tot("Ca")  tot("Mg") tot("P")  tot("Cl")  tot("Sulfate") tot ("Amm")  tot("C(4)")
+30 PUNCH CALC_VALUE ("SC_T25")
+40 PUNCH equi("redoxFeS(ppt)")  equi("redoxPyrite") equi("redoxCalcite")  equi("Hydroxyapatite")  equi("redoxVivianite")  equi("redoxDolomite")
+-end
+END

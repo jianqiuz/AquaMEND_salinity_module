@@ -1,0 +1,136 @@
+
+DATABASE ../database/redox.dat
+
+TITLE simulate soil solution
+
+# estimate soil solution dynamics in response to salt water addition
+#based on lab experiment from van Dijk 2015 Biogeochemistry
+##ctrl---no surface processes
+
+CALCULATE_VALUES
+SC_T25
+-start
+10 sc25 = SC/(1+0.021*(temperature-25))
+20 SAVE sc25
+-end
+
+SOLUTION 1
+units umol/L   #1L fresh soil
+pH    7  charge
+temperature 	 25
+water         0.887   #default is 1 kg
+
+P           49.84
+Amm         380.30
+Na          2280
+Ca          3830
+Cl          1330 
+Sulfate     20 
+K           280
+Mg          790
+C(4)        9  
+Nitrate        0
+Ferric       500
+Alanine      1000
+Cysteine     1000
+Glycine      1000
+Glutamine    1000
+Threonine    1000
+Tyrosine     1000
+
+
+  SAVE SOLUTION 1
+END
+ 
+GAS_PHASE 1 
+  -pressure	    1.01  #(L)  calculate air pore space
+  temperature 	 25.0
+  redoxO2(g)   0.29
+  redoxCH4(g)  0.0
+  redoxCO2(g)  0.000316
+  SAVE GAS_PHASE 1
+END
+
+
+USE SOLUTION 1
+USE GAS_PHASE 1
+
+EXCHANGE_SPECIES
+ X- = X-; log_k 0     #semicolon is logical end of line
+ X- + AmmH4+ = AmmH4X;  log_k  0.25   #define the half-reactions of ion change
+ 2X- + Ca+2  = CaX2;    log_k  0.5    $logK's relative 
+ 2X- + Mg+2  = MgX2;    log_k  0.4
+ X- + H+  = HX;         log_k  1.0
+ X- + Na+  = NaX;       log_k  0.0
+ X- + K+  = KX;         log_k  0.1
+
+EXCHANGE 1   #exchanger in equilibirium 
+#exchanger has a fixed CEC--adjust amount or aqueous concentration
+  X        0.001     #exchanger amount cmol/L
+  AmmH4X   0.001
+  -equilibrate with solution 1
+  -exchange_gammas   true
+ 
+ 
+EQUILIBRIUM_PHASES 1
+  redoxCalcite      1  0.001     #CaCo3
+  redoxFeS(ppt)     1  0.1     #FeS
+  Hydroxyapatite    1  0.001     #Ca5(PO4)3OH
+  redoxPyrite       1  0.1     #FeS2
+  redoxFe(OH)3(a)   1  2 
+  Hydroxyapatite    1  0.2    #Ca5(PO4)3OH
+  redoxVivianite    1  0.2    #Ferrous3(PO4)2:8H2O
+  redoxDolomite     1  0   #CaMgCO3
+
+SURFACE 1
+#site density (per nm2), SSA (m2/g), gram
+Hfo_wOH 2e-4  600 0.001  #0.02mol
+Hfo_sOH 5e-6
+-Donnan 1e-8   #defuse layer thickness
+
+##surface binding site(name), SSA_per_gram, grams, (optional: diffusion coefficient for the surface)
+  H_a   3.837E-02  3.4E+04     0.001  ##gram of SOM for exchange
+  H_b   3.837E-02; H_c   3.837E-02; H_d  3.837E-02
+  H_e   1.919E-02; H_f   1.919E-02; H_g  1.919E-02; H_h  1.919E-02
+  H_ab  6.378E-02; H_ad  6.378E-02; H_af  6.378E-02; H_ah  6.378E-02
+  H_bc  6.378E-02; H_be  6.378E-02; H_bg  6.378E-02; H_cd  6.378E-02
+  H_cf  6.378E-02; H_ch  6.378E-02; H_de  6.378E-02; H_dg  6.378E-02
+ -equilibrate with solution 1
+
+KINETICS  Decomposition  ##in mgC per g soil
+-cvode
+
+Salt
+   -m0   0   #model not sensitivity
+   -formula  Cl-  -5  Sulfate  -1   Na+  -7.5   K+  -0.1    Ca+2  -1  Mg+2  -0.5   HCO3  -3
+   -parms 0.035  # velocity for water to pass through soil
+
+   -steps 200 in 200 steps #day
+  INCREMENTAL_REACTIONS true
+
+RATES
+Salt
+   -start
+    10 salt=kin("salt")
+    20 rate = parm(1)*(0.01-salt)   ## The incoming concentration is important
+    30 save -rate * time
+   -end
+
+SELECTED_OUTPUT
+-RESET false
+-FILE clay_fresh_ctrl.txt
+
+USER_PUNCH
+-start
+-heading pH  Na  K  Ca  Mg  PO4  Cl  SO4 NH4 HCO3 sc FeS Pyrite Calcite  CaPO4  Fe3PO4  CaMgCO3
+10 PUNCH -la("H+")
+20 PUNCH tot("Na")  tot("K")  tot("Ca")  tot("Mg") tot("P")  tot("Cl")  tot("Sulfate") tot ("Amm")  tot("C(4)")
+30 PUNCH CALC_VALUE ("SC_T25")
+40 PUNCH equi("redoxFeS(ppt)")  equi("redoxPyrite") equi("redoxCalcite")  equi("Hydroxyapatite")  equi("redoxVivianite")  equi("redoxDolomite")
+-end
+END
+
+
+
+
+

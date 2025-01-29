@@ -7,16 +7,16 @@ This framework considers both the direct and indirect effects of salinization. I
 
 This conceptual model is implemented numerically into the open-source geochemical program PHREEQC 3.0 (Parkhurst and Appelo, 2013). The model is designed to simulate key microbial and geochemical processes in soils. 
 
-Step 1: PHREEQC installation (Mac system) Download is available on USGS website https://wwwbrr.cr.usgs.gov/projects/GWC_coupled/phreeqc/  
-Extract and install PHREEQC in a preferred directory (e.g.,  /usr/local/phreeqc)  
-Open the terminal and update the .bash_profile  
-Add the following lines (replace XX with your PHREEQC installzaton path:  
+**`Step 1:'** PHREEQC installation (Mac system) Download is available on USGS website https://wwwbrr.cr.usgs.gov/projects/GWC_coupled/phreeqc/  
+-Extract and install PHREEQC in a preferred directory (e.g.,  /usr/local/phreeqc)  
+-Open the terminal and update the .bash_profile  
+-Add the following lines (replace XX with your PHREEQC installzaton path:  
 export PATH="XX/phreeqc/bin:$PATH"   
 export PHREEQC_DATABASE=XX/phreeqc/database/phreeqc.dat  
-Save the file and apply the changes  
-To verify installation, run "phreeqc" in the terminal, if the installation is successful, you should see the prompt "Name of input file?" 
+-Save the file and apply the changes  
+-To verify installation, run "phreeqc" in the terminal, if the installation is successful, you should see the prompt "Name of input file?" 
   
-Step 2: Copy and paste the database file (redox.dat) provided in the database folder to your PHREEQC database directory  
+**`Step 1:'** Copy and paste the database file (redox.dat) provided in the database folder to your PHREEQC database directory  
 
 The soil solution chemistry is specified in the SOLUTION, GAS-PHASE, EXCHANGE, and SURFACE blocks. The reaction network is implemented using the KINETICS and RATES blocks. Salinity response functions are defined within the CALCULATE_VALUES block. Detailed guidelines for model implementation in PHREEQC are available in the user manual https://pubs.usgs.gov/tm/06/a43/
 

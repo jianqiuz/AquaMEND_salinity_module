@@ -22,7 +22,7 @@ The soil solution chemistry is specified in the SOLUTION, GAS-PHASE, EXCHANGE, a
 
 ### File Dictionary
 
-- **`AquaMEND_microbial_mechanisms`**: Contains model setup and simulations for testing various microbial process-based hypotheses related to soil salinization, including microbial mortality, carbon use efficiency (CUE), extracellular enzyme activity, and other microbial mechanisms.
+- **`AquaMEND_microbial_mechanisms`**: Contains model setup and simulations for testing various microbial process-based hypotheses related to soil salinization, including microbial mortality, carbon use efficiency (CUE), extracellular enzyme activity, and other microbial mechanisms. Exactuable input files have a .phrq extension, while detailed output files are saved as .phrq.out, Extracted outputs are written to .txt files as specified in the input script.
 
 - **`AquaMEND_process_couple`**: Includes model setup and simulations for exploring coupled biotic-abiotic processes and their interactions.
 
@@ -33,6 +33,8 @@ The soil solution chemistry is specified in the SOLUTION, GAS-PHASE, EXCHANGE, a
 - **`AquaMEND_sorption`**: Provides model setup and simulations for investigating the effects of salinity on dissolved organic matter (DOM) sorption and desorption processes.
 
 - **`data`**: Includes datasets used to develop salinity response functions and evaluate salinity buffering capacity.
+
+
 
 - **`database`**: Contains the `.dat` file required by PHREEQC for model execution. 
 

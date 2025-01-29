@@ -10,7 +10,7 @@ This conceptual model is implemented numerically into the open-source geochemica
 **Step 1:** PHREEQC installation (Mac system) Download is available on USGS website https://wwwbrr.cr.usgs.gov/projects/GWC_coupled/phreeqc/  
 - Extract and install PHREEQC in a preferred directory (e.g.,  /usr/local/phreeqc)  
 - Open the terminal and update the .bash_profile  
-- Add the following lines (replace XX with your PHREEQC installzaton path:  
+- Add the following lines (replace XX with your PHREEQC installation path):  
     export PATH="XX/phreeqc/bin:$PATH"   
     export PHREEQC_DATABASE=XX/phreeqc/database/phreeqc.dat  
 - Save the file and apply the changes  

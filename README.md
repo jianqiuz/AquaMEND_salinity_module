@@ -32,7 +32,7 @@ The soil solution chemistry is specified in the SOLUTION, GAS-PHASE, EXCHANGE, a
 
 - **`AquaMEND_sorption`**: Provides model setup and simulations for investigating the effects of salinity on dissolved organic matter (DOM) sorption and desorption processes.
 
-- **`data`**: Includes datasets used to develop salinity response functions and evaluate salinity buffering capacity.
+- **`data`**: Includes datasets used to develop salinity response functions and evaluate salinity buffering capacity. Datasets for MEND model calibration.
 
 
 

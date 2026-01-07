@@ -1,0 +1,339 @@
+---
+title: "Salinity function plotting"
+author: "Jianqiu Zheng"
+date: "10/3/2023"
+output: html_document
+---
+
+##Fitting salinity function
+## 3 types of curves: linear, polynomial, sigmoidal
+
+```{r cars}
+library(ggplot2)
+library(scales)
+library(ggpubr)
+theme_pubr()
+
+#load data and rescale
+obv<-read.csv("Dong_LAP.csv",header=TRUE)
+x<-log10(obv$salinity)
+y<-rescale(obv$rate)
+data1<-cbind(x,y)
+
+obv2<-read.csv("tripathi_alkp.csv",header=TRUE)
+x<-log10(obv2$salinity)
+y<-rescale(obv2$rate)
+data2<-cbind(x,y)
+
+data3<-rbind(data1, data2)
+write.csv(data3,"tripathi_p.csv")
+#x<-data3[, 1]
+#y<-data3[,2]
+##fitting three different curves
+fit1<-nls(y~a*x+b, start=list(a=-0.05, b=-0.2))
+
+fit2<-nls(y~a*x^2+b*x+c, start=list(a=-0.05, b=-0.2, c=1))
+#get some estimation of goodness of fit
+
+fit3<-nls(y~1/(1+exp(a*(x-b))), start=list(a=-0.5, b=0.2))
+
+##correlations
+corr1<-cor(y,predict(fit1))
+corr2<-cor(y,predict(fit2))
+corr3<-cor(y,predict(fit3))
+
+#test plot
+plot(x,y)
+lines(x,predict(fit3),lty=2,col="red",lwd=3)
+
+###trying to create confidence interval
+library(tidyverse)
+library(investr)
+ab<-data.frame(x=seq(-3, 3, by=0.1))
+interval<-as_tibble(investr::predFit(fit3, newdata=ab, interval="confidence", level=0.9)) %>%
+  mutate(x=ab$x)
+  
+
+
+#obv$rr<-y
+newobv<-data.frame(x,y)
+newobv$rr<-y
+
+plot1 <- ggplot(newobv,mapping=aes(x=x, y=rr))+geom_point(color="#542788", shape=1, stroke=1)+ 
+scale_y_continuous(limits=c(-0.1,1.2), breaks=c(0,0.50, 1.00))+#scale_x_log10()+
+ theme_pubr(border=TRUE)+theme(legend.position="NA")+theme(strip.text=element_text(size=16, face="bold"))+xlab("Salinity in log(dS/m)")+ylab("Scaled rate")+ggtitle("Dong_lap_fit3")
+
+plot2<-plot1+
+  geom_line(data=interval, mapping=aes(x=x, y=fit),color="#b35806",linewidth=1.2 )+geom_ribbon(data=interval, aes(x=x, ymin=lwr, ymax=upr), alpha=0.4,inherit.aes=F, fill="#b35806" )
+
+pdf("Laura_fit1.pdf", width=3.4, height=3)
+plot2
+dev.off() 
+
+
+```
+
+## Draw multiple salinity functions
+```{r function}
+library("ggplot2")
+fun1<- function(x){1/(1+exp(-1.68*(0.26-x)))} #rath-bacteria
+fun2<-function(x){1/(1+exp(-1.299*(0.732-x)))}   #rath-fun
+fun3<-function(x){1/(1+exp(-1.017*(0.3531-x)))} #rath-resp
+
+fun4<-function(x){1/(1+exp(-2.226*(1.107-x)))}  #tripathi-mbc
+fun5<- function(x){1/(1+exp(-2.2882*(0.8072-x)))}  #tripathi-glucosidase
+fun6<-function(x){1/(1+exp(-3.32976*(1.14114-x)))}  #tripathi-dehydrogenase
+fun7<-function(x){1/(1+exp(-1.692*(0.74572-x)))}   #tripathi-urease
+fun8<-function(x){1/(1+exp(-2.23822*(1.06124-x)))}  #tripathi-phosphatase
+
+fun9<- function(x){1/(1+exp(-2.28533*(0.60334-x)))}  #Dong-growth
+fun10<-function(x){1/(1+exp(-1.68*(-0.26-x)))}  #Dong-LAP
+
+fun11<-function(x){1/(1+exp(-4.02891*(1.77659-x)))}  #laura-C loss
+
+
+###-------------loading observational data
+obv1<-read.csv("Rath_data1_BacGrowth.csv",header=TRUE)
+obv1$sal<-log10(obv1$salinity)
+obv1$sr<-rescale(obv1$rate)
+obv1$grounp<-c("obv1")
+
+obv2<-read.csv("Rath_data2_FunGrowth.csv",header=TRUE)
+obv2$sal<-log10(obv2$salinity)
+obv2$sr<-rescale(obv2$rate)
+obv2$grounp<-c("obv2")
+
+obv3<-read.csv("Rath_data3_resp.csv",header=TRUE)
+obv3$sal<-log10(obv3$salinity)
+obv3$sr<-rescale(obv3$rate)
+obv3$grounp<-c("obv3")
+#------
+obv4<-read.csv("tripathi_mbc.csv",header=TRUE)
+obv4$sal<-log10(obv4$salinity)
+obv4$sr<-rescale(obv4$rate)
+obv4$grounp<-c("obv4")
+
+obv5<-read.csv("tripathi_glucosidase.csv",header=TRUE)
+obv5$sal<-log10(obv5$salinity)
+obv5$sr<-rescale(obv5$rate)
+obv5$grounp<-c("obv5")
+
+obv6<-read.csv("tripathi_dehy.csv",header=TRUE)
+obv6$sal<-log10(obv6$salinity)
+obv6$sr<-rescale(obv6$rate)
+obv6$grounp<-c("obv6")
+
+obv7<-read.csv("tripathi_urea.csv",header=TRUE)
+obv7$sal<-log10(obv7$salinity)
+obv7$sr<-rescale(obv7$rate)
+obv7$grounp<-c("obv7")
+
+obv8<-read.csv("tripathi_p.csv",header=TRUE)
+obv8$sal<-log10(obv8$salinity)
+obv8$sr<-rescale(obv8$rate)
+obv8$grounp<-c("obv8")
+#-------
+obv9<-read.csv("Dong_growth.csv",header=TRUE)
+obv9$sal<-log10(obv9$salinity)
+obv9$sr<-rescale(obv9$rate)
+obv9$grounp<-c("obv9")
+
+obv10<-read.csv("Dong_lap.csv",header=TRUE)
+obv10$sal<-log10(obv10$salinity)
+obv10$sr<-rescale(obv10$rate)
+obv10$grounp<-c("obv90")
+
+
+obv11<-read.csv("laura_closs.csv",header=TRUE)
+obv11$sal<-log10(obv11$salinity)
+obv11$sr<-rescale(obv11$rate)
+obv11$grounp<-c("obv91")
+
+obv_temp<-rbind(obv1,obv2,obv3,obv4,obv5,obv6,obv7,obv9,obv10,obv11)
+
+
+df=data.frame(x = seq(-3, 3, by=0.1))
+df$y1<-fun1(df$x)
+df$y2<-fun2(df$x)
+df$y3<-fun3(df$x)
+df$y4<-fun4(df$x)
+df$y5<-fun5(df$x)
+df$y6<-fun6(df$x)
+df$y7<-fun7(df$x)
+#df$y8<-fun8(df$x)
+df$y9<-fun9(df$x)
+df$y10<-fun10(df$x)
+df$y11<-fun11(df$x)
+
+newdf<-reshape2::melt(df, id.var="x")
+ 
+plot1<- ggplot()+geom_line(newdf, mapping=aes(x, value, col = variable), size=0.7)+
+  #geom_line(aes(size=variable))+scale_size_manual(values=c(1,0.5,0.5,0.5,0.5,0.5,0.5,1,0.5,1,1))+
+  scale_color_manual(values = c("#b2abd2","#8073ac","#542788","#7f3b08","#b35806","#e08214","#fdb863",
+                                "#247074","#309d8e","#15212b","#b2abd2","#8073ac","#542788","#7f3b08","#b35806","#e08214","#fdb863","#247074","#309d8e","#15212b"))+scale_y_continuous(limits=c(-0,1), breaks=c(0,0.50, 1.00))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(strip.text=element_text(size=18, face="bold"))+xlab("Salinity in log(dS/m)")+ylab("Scaled rate")
+
+plot2<-plot1+geom_point(obv_temp, mapping=aes(sal, sr, col=grounp), shape=1)
+
+
+pdf("salinity fitting2.pdf", width=5.5, height=3)
+plot2
+dev.off() 
+
+
+df2=data.frame(x = seq(-3, 3, by=0.1))
+df2$y1<-fun9(df2$x)
+df2$y4<-fun4(df2$x)
+df2$y10<-fun10(df2$x)
+df2$y11<-fun11(df2$x)
+newdf2<-reshape2::melt(df2, id.var="x")
+
+
+plot2<- ggplot()+geom_line(newdf2, mapping=aes(x, value, col = variable), size=1)+
+  #geom_line(aes(size=variable))+scale_size_manual(values=c(1,0.5,0.5,0.5,0.5,0.5,0.5,1,0.5,1,1))+
+  scale_color_manual(values = c("#8073ac","#b35806","#542788","#7f3b08"))+scale_y_continuous(limits=c(-0,1), breaks=c(0,0.50, 1.00))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(strip.text=element_text(size=18, face="bold"))+xlab("Salinity in log(dS/m)")+ylab("Scaled rate")+theme(panel.grid.major=element_line(color="gray",linewidth=0.4, linetype="dashed"))
+
+plot3<-plot2+geom_ribbon(data=df2, mapping=aes(x=x, ymin=y10, ymax=y1), fill="#b2abd2", alpha=0.5)
+plot4<-plot3+geom_ribbon(data=df2, mapping=aes(x=x, ymin=y4, ymax=y11), fill="#b35806", alpha=0.3)
+  
+plot4
+
+
+pdf("fsalt_new.pdf", width=5.5, height=3)
+plot4
+dev.off() 
+
+```
+
+##process neutral or positive response
+
+```{r neutral}
+
+#load data and rescale
+obv<-read.csv("Dong_nag.csv",header=TRUE)
+x<-obv$salinity
+y<-rescale(obv$rate)
+data1<-cbind(x,y)
+
+fit1<-nls(y~a*x+b, start=list(a=-0.05, b=-0.2))
+
+fit2<-nls(y~a*x^2+b*x+c, start=list(a=-0.05, b=-0.2, c=1))
+#get some estimation of goodness of fit
+
+fit3<-nls(y~1/(1+exp(a*(x-b))), start=list(a=-0.5, b=0.2))
+
+##correlations
+corr1<-cor(y,predict(fit1))
+corr2<-cor(y,predict(fit2))
+corr3<-cor(y,predict(fit3))
+
+#test plot
+plot(x,y)
+lines(x,predict(fit3),lty=2,col="red",lwd=3)
+
+###trying to create confidence interval
+library(tidyverse)
+library(investr)
+ab<-data.frame(x=seq(0, 15, by=0.1))
+interval<-as_tibble(investr::predFit(fit1, newdata=ab, interval="confidence", level=0.9)) %>%
+  mutate(x=ab$x)
+  
+
+
+#obv$rr<-y
+newobv<-data.frame(x,y)
+newobv$rr<-y
+
+plot1 <- ggplot(newobv,mapping=aes(x=x, y=rr))+geom_point(color="#542788", shape=1, stroke=1)+ 
+scale_y_continuous(limits=c(-0.2,1.2), breaks=c(0,0.50, 1.00))+#scale_x_log10()+
+ theme_pubr(border=TRUE)+theme(legend.position="NA")+theme(strip.text=element_text(size=16, face="bold"))+xlab("Salinity (dS/m)")+ylab("Scaled rate")+ggtitle("Dong_nag_fit1")
+
+plot2<-plot1+
+  geom_line(data=interval, mapping=aes(x=x, y=fit),color="#b35806",linewidth=1.2 )+geom_ribbon(data=interval, aes(x=x, ymin=lwr, ymax=upr), alpha=0.4,inherit.aes=F, fill="#b35806" )
+
+pdf("Dong_nag_fit1.pdf", width=3.4, height=3)
+plot2
+dev.off() 
+
+
+```
+
+
+## playing with salinity function parameters
+
+```{r function}
+library("ggplot2")
+fun1<- function(x){1/(1+exp(-0.5*(1-x)))} #rath-bacteria
+fun2<-function(x){1/(1+exp(-1*(1-x)))}   #rath-fun
+fun3<-function(x){1/(1+exp(-1.5*(1-x)))} #rath-resp
+
+fun4<-function(x){1/(1+exp(-2*(1-x)))}  #tripathi-mbc
+fun5<- function(x){1/(1+exp(-2.5*(1-x)))}  #tripathi-glucosidase
+fun6<-function(x){1/(1+exp(-3*(1-x)))}  #tripathi-dehydrogenase
+fun7<-function(x){1/(1+exp(-3.5*(1-x)))}   #tripathi-urease
+fun8<-function(x){1/(1+exp(-4*(1-x)))}  #tripathi-phosphatase
+
+
+df=data.frame(x = seq(-3, 3, by=0.1))
+df$y1<-fun1(df$x)
+df$y2<-fun2(df$x)
+df$y3<-fun3(df$x)
+df$y4<-fun4(df$x)
+df$y5<-fun5(df$x)
+df$y6<-fun6(df$x)
+df$y7<-fun7(df$x)
+df$y8<-fun8(df$x)
+
+
+newdf<-reshape2::melt(df, id.var="x")
+ 
+plot1<- ggplot()+geom_line(newdf, mapping=aes(x, value, col = variable), size=0.7)+
+  #geom_line(aes(size=variable))+scale_size_manual(values=c(1,0.5,0.5,0.5,0.5,0.5,0.5,1,0.5,1,1))+
+  scale_color_manual(values = c("#b2abd2","#8073ac","#542788","#2d004b","#7f3b08","#b35806","#e08214","#fdb863"))+scale_y_continuous(limits=c(-0,1), breaks=c(0,0.50, 1.00))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(strip.text=element_text(size=18, face="bold"))+xlab("Salinity in log(dS/m)")+ylab("Scaled rate")
+
+
+
+pdf("salinity-parameter-a.pdf", width=5.5, height=3)
+plot1
+dev.off() 
+
+#----------------------------parameter b
+fun1<- function(x){1/(1+exp(-1.5*(-1-x)))} #rath-bacteria
+fun2<-function(x){1/(1+exp(-1.5*(-0.5-x)))}   #rath-fun
+fun3<-function(x){1/(1+exp(-1.5*(0-x)))} #rath-resp
+
+fun4<-function(x){1/(1+exp(-1.5*(0.5-x)))}  #tripathi-mbc
+fun5<- function(x){1/(1+exp(-1.5*(1-x)))}  #tripathi-glucosidase
+fun6<-function(x){1/(1+exp(-1.5*(1.5-x)))}  #tripathi-dehydrogenase
+fun7<-function(x){1/(1+exp(-1.5*(2-x)))}   #tripathi-urease
+fun8<-function(x){1/(1+exp(-1.5*(2.5-x)))}  #tripathi-phosphatase
+
+
+df=data.frame(x = seq(-3, 3, by=0.1))
+df$y1<-fun1(df$x)
+df$y2<-fun2(df$x)
+df$y3<-fun3(df$x)
+df$y4<-fun4(df$x)
+df$y5<-fun5(df$x)
+df$y6<-fun6(df$x)
+df$y7<-fun7(df$x)
+df$y8<-fun8(df$x)
+
+
+newdf<-reshape2::melt(df, id.var="x")
+ 
+plot1<- ggplot()+geom_line(newdf, mapping=aes(x, value, col = variable), size=0.7)+
+  #geom_line(aes(size=variable))+scale_size_manual(values=c(1,0.5,0.5,0.5,0.5,0.5,0.5,1,0.5,1,1))+
+  scale_color_manual(values = c("#b2abd2","#8073ac","#542788","#2d004b","#7f3b08","#b35806","#e08214","#fdb863"))+scale_y_continuous(limits=c(-0,1), breaks=c(0,0.50, 1.00))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(strip.text=element_text(size=18, face="bold"))+xlab("Salinity in log(dS/m)")+ylab("Scaled rate")
+
+
+
+pdf("salinity-parameter-b.pdf", width=5.5, height=3)
+plot1
+dev.off() 
+
+```
+

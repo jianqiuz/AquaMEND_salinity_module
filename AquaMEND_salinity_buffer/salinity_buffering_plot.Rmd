@@ -1,0 +1,215 @@
+---
+title: "MENDsimulations"
+author: "Jianqiu Zheng"
+date: "7/15/2021"
+output: html_document
+---
+
+
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(ggpubr)
+library(scales)
+library(MASS) # to access Animals data sets
+library(ggallin)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(stringr)
+library(ggpmisc)
+theme_pubr()
+```
+
+##Figure 1 Comparing effect of 3 exchange component
+
+```{r data}
+ex<-read.delim("vanD_peat_fresh_ex.txt",header=TRUE)
+om<-read.delim("vanD_peat_fresh_om.txt",header=TRUE)
+hfo<-read.delim("vanD_peat_fresh_hfo.txt",header=TRUE)
+ex<-ex[-1, ]
+om<-om[-1, ]
+hfo<-hfo[-1, ]
+
+df<-data.frame(matrix(NA, nrow=15))
+df$time<-obv$time
+df$ex<-ex$NH4*1000
+df$om<-om$NH4*1000
+df$hfo<-hfo$NH4*1000
+df<-df[,-1]
+
+newdf<-reshape2::melt(df, id.var="time")
+
+plot1<-ggplot(newdf, mapping=aes(time, value, color=variable))+geom_line(linewidth=1)+ 
+  scale_color_manual(values = c("#8073ac","#b35806","#309d8e","#7f3b08"))+
+  scale_y_continuous(limits=c(0,0.5), breaks=c(0,0.25,0.5))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(strip.text=element_text(size=18, face="bold"))+xlab("Time(Day)")+ylab("NH4 (mM)")
+
+pdf("NH4_3settings.pdf",width=4, height=2.5)
+plot1
+dev.off()
+
+
+```
+
+
+
+##load data
+```{r data}
+
+fresh<-read.csv("peat_fresh.csv",header=TRUE)
+fresh$time<-c(6,19,33,47,62,75,89,103,117,131,145,159,173,187,201)
+
+salt<-read.csv("peat_salt.csv",header=TRUE)
+salt$time<-c(6,19,33,47,62,75,89,103,117,131,145,159,173,187,201)
+
+mod1<-read.delim("peat_fresh_low.txt",header=TRUE)
+mod1<-mod1[-(1:2), ]
+mod1$time<-seq(1:200)
+
+mod2<-read.delim("peat_fresh_ref.txt",header=TRUE)
+mod2<-mod2[-(1:2), ]
+mod2$time<-seq(1:200)
+
+mod3<-read.delim("peat_fresh_high.txt",header=TRUE)
+mod3<-mod3[-(1:2), ]
+mod3$time<-seq(1:200)
+
+
+salt1<-read.delim("peat_salt_low.txt",header=TRUE)
+salt1<-salt1[-(1:2), ]
+salt1$time<-seq(1:200)
+
+salt2<-read.delim("peat_salt_ref.txt",header=TRUE)
+salt2<-salt2[-(1:2), ]
+salt2$time<-seq(1:200)
+
+salt3<-read.delim("peat_salt_high.txt",header=TRUE)
+salt3<-salt3[-(1:2), ]
+salt3$time<-seq(1:200)
+
+ctf<-read.delim("vanD_peat_fresh_ctrl.txt",header=TRUE)
+ctf<-ctf[-1, ]
+cts<-read.delim("vanD_peat_salt_ctrl.txt",header=TRUE)
+cts<-cts[-1, ]
+
+####-----------------------
+df<-data.frame(matrix(NA, nrow=200))
+df$time<-mod1$time
+df$lwr<-mod1$SO4*1000
+df$ref<-mod2$SO4*1000
+df$upr<-mod3$SO4*1000
+df<-df[,-1]
+
+
+ds<-data.frame(matrix(NA, nrow=200))
+ds$time<-salt1$time
+ds$lwr<-salt1$SO4*1000
+ds$ref<-salt2$SO4*1000
+ds$upr<-salt3$SO4*1000
+ds<-ds[,-1]
+
+obv<-data.frame(matrix(NA, nrow=15))
+obv$time<-fresh$time
+obv$Freshwater<-fresh$SO4
+obv$Saltwater<-salt$SO4
+obv<-obv[,-1]
+
+obvdf<-reshape2::melt(obv, id.var="time")
+
+
+ctrl<-data.frame(matrix(NA, nrow=15))
+ctrl$time<-fresh$time
+ctrl$Freshwater<-ctf$NH4*1000
+ctrl$Saltwater<-cts$NH4*1000
+ctrl<-ctrl[,-1]
+
+ctdf<-reshape2::melt(ctrl, id.var="time")
+
+
+plot1<-ggplot()+geom_point(obvdf, mapping=aes(time, value, color=variable), size=2)+
+ scale_y_continuous(limits=c(0,6), breaks=c(0,3,6))+
+  scale_x_continuous(limits=c(0,205), breaks=c(0,100,200))+
+ scale_color_manual(values = c("#b35806","#8073ac"))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(strip.text=element_text(size=18, face="bold"))+xlab("Time(Day)")+ylab("SO4 (mM)")
+
+plot2<-plot1+
+  geom_line(data=df, mapping=aes(x=time, y=ref),color="#b35806",linewidth=1.2 )+geom_ribbon(data=df, aes(x=time, ymin=lwr, ymax=upr), alpha=0.3,inherit.aes=F, fill="#b35806" )
+
+plot3<-plot2+
+  geom_line(data=ds, mapping=aes(x=time, y=ref),color="#8073ac",linewidth=1.2 )+geom_ribbon(data=ds, aes(x=time, ymin=lwr, ymax=upr), alpha=0.3,inherit.aes=F, fill="#8073ac" )
+
+plot4<-plot3+geom_line(data=ctdf, mapping=aes(x=time, y=value, color=variable),linetype="dashed",linewidth=1)
+
+
+
+pdf("new_peat_SO4_noctrl.pdf",width=4.2, height=2.5)
+plot3
+dev.off()
+
+
+
+#------------------
+
+df<-data.frame(matrix(NA, nrow=200))
+df$time<-mod1$time
+df$lwr<-mod1$pH
+df$ref<-mod2$pH
+df$upr<-mod3$pH
+
+
+
+
+ds<-data.frame(matrix(NA, nrow=200))
+ds$time<-salt1$time
+ds$lwr<-salt1$pH
+ds$ref<-salt2$pH
+ds$upr<-salt3$pH
+
+
+
+obv<-data.frame(matrix(NA, nrow=15))
+obv$time<-fresh$time
+obv$fresh<-fresh$pH
+obv$salt<-salt$pH
+obv<-obv[,-1]
+
+obvdf<-reshape2::melt(obv, id.var="time")
+
+
+ctrl<-data.frame(matrix(NA, nrow=15))
+ctrl$time<-fresh$time
+ctrl$Freshwater<-ctf$pH
+ctrl$Saltwater<-cts$pH
+ctrl<-ctrl[,-1]
+
+ctdf<-reshape2::melt(ctrl, id.var="time")
+
+
+plot1<-ggplot()+geom_point(obvdf, mapping=aes(time, value, color=variable), size=2)+
+scale_y_continuous(limits=c(6,10), breaks=c(6,8,10))+
+  scale_x_continuous(limits=c(0,205), breaks=c(0,100,200))+
+ scale_color_manual(values = c("#b35806","#8073ac"))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(strip.text=element_text(size=18, face="bold"))+xlab("Time(Day)")+ylab("pH")
+
+plot2<-plot1+
+  geom_line(data=df, mapping=aes(x=time, y=ref),color="#b35806",linewidth=1.2 )+geom_ribbon(data=df, aes(x=time, ymin=lwr, ymax=upr), alpha=0.3,inherit.aes=F, fill="#b35806" )
+
+plot3<-plot2+
+  geom_line(data=ds, mapping=aes(x=time, y=ref),color="#8073ac",linewidth=1.2 )+geom_ribbon(data=ds, aes(x=time, ymin=lwr, ymax=upr), alpha=0.3,inherit.aes=F, fill="#8073ac" )
+
+plot4<-plot3+geom_line(data=ctdf, mapping=aes(x=time, y=value, color=variable),linetype="dashed",linewidth=1 )
+plot4
+
+
+
+pdf("clay_pH.pdf",width=3.8, height=2.5)
+plot4
+dev.off()
+
+
+
+```
+
+
+

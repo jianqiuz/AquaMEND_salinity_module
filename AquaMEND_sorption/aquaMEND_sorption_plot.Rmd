@@ -1,0 +1,330 @@
+---
+title: "MENDsimulations"
+author: "Jianqiu Zheng"
+date: "7/15/2021"
+output: html_document
+---
+
+
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(ggpubr)
+library(scales)
+library(MASS) # to access Animals data sets
+library(ggallin)
+library(dplyr)
+library(readr)
+library(tidyr)
+library(stringr)
+library(ggpmisc)
+theme_pubr()
+```
+
+##Figure 1 Comparing effect of 3 exchange component
+
+```{r data}
+ctrl<-read.delim("Ex1_ref.txt",header=TRUE)
+fs1<-read.delim("Ex1_ref_max1.txt",header=TRUE)
+fs2<-read.delim("Ex1_ref_max2.txt",header=TRUE)
+fs3<-read.delim("Ex1_ref_max3.txt",header=TRUE)
+fs4<-read.delim("Ex1_ref_max4.txt",header=TRUE)
+
+
+ts1<-read.delim("Ex1_ref_max1_fs.txt",header=TRUE)
+ts2<-read.delim("Ex1_ref_max2_fs.txt",header=TRUE)
+ts3<-read.delim("Ex1_ref_max3_fs.txt",header=TRUE)
+ts4<-read.delim("Ex1_ref_max4_fs.txt",header=TRUE)
+tsref<-read.delim("Ex1_ref_fs.txt",header=TRUE)
+
+
+ks1<-read.delim("Ex1_ref_max1_kba.txt",header=TRUE)
+ks2<-read.delim("Ex1_ref_max2_kba.txt",header=TRUE)
+ks3<-read.delim("Ex1_ref_max3_kba.txt",header=TRUE)
+ks4<-read.delim("Ex1_ref_max4_kba.txt",header=TRUE)
+ksref<-read.delim("Ex1_ref_kba.txt",header=TRUE)
+
+
+obv<-read.csv("Ultisol_control_gram.csv")
+
+##--------simple data visualization
+ctrl<-ctrl[-(1:2), ]
+fs1<-fs1[-(1:2), ]
+fs2<-fs2[-(1:2), ]
+fs3<-fs3[-(1:2), ]
+fs4<-fs4[-(1:2), ]
+
+
+ts1<-ts1[-(1:2), ]
+ts2<-ts2[-(1:2), ]
+ts3<-ts3[-(1:2), ]
+ts4<-ts4[-(1:2), ]
+tsref<-tsref[-(1:2), ]
+
+ks1<-ks1[-(1:2), ]
+ks2<-ks2[-(1:2), ]
+ks3<-ks3[-(1:2), ]
+ks4<-ks4[-(1:2), ]
+ksref<-ksref[-(1:2), ]
+
+
+#-------------------------
+
+df<-data.frame(matrix(NA, nrow=nrow(fs1)))
+df$time<-ctrl$SC/1000
+df$max1<-ts1$QOM/fs1$QOM-1
+df$max2<-ts2$QOM/fs2$QOM-1
+df$max25<-tsref$QOM/ctrl$QOM-1
+df$max3<-ts3$QOM/fs3$QOM-1
+df$max4<-ts4$QOM/fs4$QOM-1
+
+df$pax1<-ks1$QOM/fs1$QOM-1
+df$pax2<-ks2$QOM/fs2$QOM-1
+df$pax25<-ksref$QOM/ctrl$QOM-1
+df$pax3<-ks3$QOM/fs3$QOM-1
+df$pax4<-ks4$QOM/fs4$QOM-1
+
+
+df<-df[,-1]
+newdf<-reshape2::melt(df, id.var="time")
+
+
+plot1<-ggplot()+geom_line(newdf, mapping=aes(time, value, color=variable),linewidth=1.5)+ 
+  scale_color_manual(values=c("#fee0b6","#fdb863","#e08214","#b35806","#7f3b08","#d8daeb","#b2abd2","#8073ac","#542788","#2d004b"))+
+  scale_y_continuous(labels=percent,limits=c(-0.7,0.7), breaks=c(-0.5,-0.25,0,0.25,0.5))+
+  #scale_x_continuous(limits=c(0,200))
+  geom_hline(yintercept=0, linetype="dashed")+
+  #scale_x_continuous(breaks=c(0,200,400))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(text=element_text(size=10))+xlab("SC (dS/m)")+ylab("Changes in QOM")
+plot1
+
+pdf("Ex2_qmax.pdf",width=3.8, height=2.5)
+plot1
+dev.off()
+
+
+#-----------------------------------------------------------------------------------
+
+df<-data.frame(matrix(NA, nrow=nrow(fs1)))
+df$time<-ctrl$SC/1000
+df$max1<-ts1$IC/fs1$IC-1
+df$max2<-ts2$IC/fs2$IC-1
+df$max25<-tsref$IC/ctrl$IC-1
+df$max3<-ts3$IC/fs3$IC-1
+df$max4<-ts4$IC/fs4$IC-1
+
+df$pax1<-ks1$IC/fs1$IC-1
+df$pax2<-ks2$IC/fs2$IC-1
+df$pax25<-ksref$IC/ctrl$IC-1
+df$pax3<-ks3$IC/fs3$IC-1
+df$pax4<-ks4$IC/fs4$IC-1
+
+
+df<-df[,-1]
+newdf<-reshape2::melt(df, id.var="time")
+
+
+plot1<-ggplot()+geom_line(newdf, mapping=aes(time, value, color=variable),linewidth=1.5)+ 
+  scale_color_manual(values=c("#fee0b6","#fdb863","#e08214","#b35806","#7f3b08","#d8daeb","#b2abd2","#8073ac","#542788","#2d004b"))+
+    scale_y_continuous(labels=percent,limits=c(-0.5,0.5), breaks=c(-0.5,-0.25,0,0.25,0.5))+
+  geom_hline(yintercept=0, linetype="dashed")+
+  #scale_x_continuous(breaks=c(0,200,400))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(text=element_text(size=10))+xlab("SC (dS/m)")+ylab("Changes in respiraiton")
+plot1
+
+
+pdf("Ex2_IC.pdf",width=3.8, height=2.5)
+plot1
+dev.off()
+#-----
+
+df<-data.frame(matrix(NA, nrow=nrow(fs1)))
+df$time<-ctrl$SC/1000
+df$max1<-ts1$DOM/fs1$DOM-1
+df$max2<-ts2$DOM/fs2$DOM-1
+df$max25<-tsref$DOM/ctrl$DOM-1
+df$max3<-ts3$DOM/fs3$DOM-1
+df$max4<-ts4$DOM/fs4$DOM-1
+
+df$pax1<-ks1$DOM/fs1$DOM-1
+df$pax2<-ks2$DOM/fs2$DOM-1
+df$pax25<-ksref$DOM/ctrl$DOM-1
+df$pax3<-ks3$DOM/fs3$DOM-1
+df$pax4<-ks4$DOM/fs4$DOM-1
+
+
+df<-df[,-1]
+newdf<-reshape2::melt(df, id.var="time")
+
+
+plot1<-ggplot()+geom_line(newdf, mapping=aes(time, value, color=variable),linewidth=1.5)+ 
+  scale_color_manual(values=c("#fee0b6","#fdb863","#e08214","#b35806","#7f3b08","#d8daeb","#b2abd2","#8073ac","#542788","#2d004b"))+
+    scale_y_continuous(labels=percent,limits=c(-0.5,0.5), breaks=c(-0.5,-0.25,0,0.25,0.5))+
+  geom_hline(yintercept=0, linetype="dashed")+
+  #scale_x_continuous(breaks=c(0,200,400))+
+ theme_pubr(border=TRUE)+theme(legend.position="right")+theme(text=element_text(size=10))+xlab("SC (dS/m)")+ylab("Changes in DOM")
+plot1
+
+pdf("Ex2_DOM.pdf",width=3.8, height=2.5)
+plot1
+dev.off()
+
+
+
+```
+
+
+
+
+###plot percent changes in different pools
+
+```{r jitterplot}
+
+ctrl<-read.delim("Ex1_ref.txt",header=TRUE)
+ctrl<-ctrl[-(1:2), ]
+data<-ctrl[,c("SC","QOM","DOM","IC")]
+data$SCds<-data$SC/1000
+tst<- data %>% mutate(SCds=round(SCds/5)*5)
+
+plot1<-ggplot(tst, aes(x=SCds, y=DOM, color=as.factor(SCds)))+
+  geom_jitter(alpha=0.3)+ theme_pubr(border=TRUE)
+
+
+
+pdf("Ex4_BA.pdf",width=2.5, height=2)
+plot4
+dev.off()
+
+#----
+df<-data.frame(matrix(NA, nrow=nrow(ctrl)))
+df$time<-ctrl$Time
+df$fs1<-(fs1$DOM+fs1$QOM)/(ctrl$DOM+ctrl$QOM)-1
+df$fs2<-(fs2$DOM+fs2$QOM)/(ctrl$DOM+ctrl$QOM)-1
+df$fs3<-(fs3$DOM+fs3$QOM)/(ctrl$DOM+ctrl$QOM)-1
+df$fs4<-(fs4$DOM+fs4$QOM)/(ctrl$DOM+ctrl$QOM)-1
+
+
+df<-data.frame(matrix(NA, nrow=nrow(ctrl)))
+df$time<-ctrl$Time
+df$fs1<-(fs1$DOM)/(ctrl$DOM)-1
+df$fs2<-(fs2$DOM)/(ctrl$DOM)-1
+df$fs3<-(fs3$DOM)/(ctrl$DOM)-1
+df$fs4<-(fs4$DOM)/(ctrl$DOM)-1
+
+df<-df[,-1]
+newdf<-reshape2::melt(df, id.var="time")
+
+plot1<-ggplot()+geom_line(newdf, mapping=aes(time, value, color=variable),linewidth=0.5)+ 
+  scale_color_manual(values=c("#542788","#8073ac","#b35806","#7f3b08"))+ geom_hline(yintercept=0, linetype="dashed")+
+   scale_y_continuous(labels=percent, limits=c(-1, 1))+
+  scale_x_continuous(breaks=c(0,200,400))+
+  theme_pubr(border=TRUE)+theme(legend.position="none")+
+  theme(text=element_text(size=10))+
+  xlab("Time(Day)")+
+  ylab("DOM")
+plot3<-plot1+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs1, ymax=fs2), fill="#b2abd2", alpha=0.5)
+plot4<-plot3+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs3, ymax=fs4), fill="#b35806", alpha=0.3)
+plot4
+
+pdf("Ex4_DOM.pdf",width=2.6, height=2)
+plot4
+dev.off()
+
+#---------------------------------------
+
+df<-data.frame(matrix(NA, nrow=nrow(ctrl)))
+df$time<-ctrl$Time
+df$fs1<-fs1$MOM/ctrl$MOM-1
+df$fs2<-fs2$MOM/ctrl$MOM-1
+df$fs3<-fs3$MOM/ctrl$MOM-1
+df$fs4<-fs4$MOM/ctrl$MOM-1
+
+
+df<-df[,-1]
+newdf<-reshape2::melt(df, id.var="time")
+
+plot1<-ggplot()+geom_line(newdf, mapping=aes(time, value, color=variable),linewidth=0.5)+ 
+  scale_color_manual(values=c("#542788","#8073ac","#b35806","#7f3b08"))+ geom_hline(yintercept=0, linetype="dashed")+
+   scale_y_continuous(labels=percent, limits=c(-0.1,0.1))+
+  scale_x_continuous(breaks=c(0,200,400))+
+  theme_pubr(border=TRUE)+theme(legend.position="none")+
+  theme(text=element_text(size=10))+
+  xlab("Time(Day)")+
+  ylab("MOM")
+plot3<-plot1+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs1, ymax=fs2), fill="#b2abd2", alpha=0.5)
+plot4<-plot3+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs3, ymax=fs4), fill="#b35806", alpha=0.3)
+plot4
+
+pdf("Ex1_MOM.pdf",width=2.4, height=2)
+plot4
+dev.off()
+
+
+#----
+df<-data.frame(matrix(NA, nrow=nrow(ctrl)))
+df$time<-ctrl$Time
+df$fs1<-fs1$Total/ctrl$Total-1
+df$fs2<-fs2$Total/ctrl$Total-1
+df$fs3<-fs3$Total/ctrl$Total-1
+df$fs4<-fs4$Total/ctrl$Total-1
+#----
+df<-data.frame(matrix(NA, nrow=nrow(ctrl)))
+df$time<-ctrl$Time
+df$fs1<-(fs1$EM+fs1$EP)/(ctrl$EM+ctrl$EP)-1
+df$fs2<-(fs2$EM+fs2$EP)/(ctrl$EM+ctrl$EP)-1
+df$fs3<-(fs3$EM+fs3$EP)/(ctrl$EM+ctrl$EP)-1
+df$fs4<-(fs4$EM+fs4$EP)/(ctrl$EM+ctrl$EP)-1
+
+
+#----
+df<-data.frame(matrix(NA, nrow=nrow(ctrl)))
+df$time<-ctrl$Time
+df$fs1<-(fs1$EP)/(ctrl$EP)-1
+df$fs2<-(fs2$EP)/(ctrl$EP)-1
+df$fs3<-(fs3$EP)/(ctrl$EP)-1
+df$fs4<-(fs4$EP)/(ctrl$EP)-1
+
+
+df<-df[,-1]
+newdf<-reshape2::melt(df, id.var="time")
+
+plot1<-ggplot()+geom_line(newdf, mapping=aes(time, value, color=variable),linewidth=1)+ 
+  scale_color_manual(values=c("#542788","#8073ac","#b35806","#7f3b08"))+ 
+  geom_hline(yintercept=0, linetype="dashed")+   
+  scale_y_continuous(labels=percent, limits=c(-1,1))+
+  scale_x_continuous(breaks=c(0,200,400))+
+  theme_pubr(border=TRUE)+theme(legend.position="right")+
+  theme(text=element_text(size=10))+
+  xlab("Time(Day)")+
+  ylab("Tot_Enzyme")
+
+plot3<-plot1+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs1, ymax=fs2), fill="#b2abd2", alpha=0.5)
+plot4<-plot3+geom_ribbon(data=df, mapping=aes(x=time, ymin=fs3, ymax=fs4), fill="#b35806", alpha=0.3)
+
+pdf("Ex1_En.pdf",width=3.3, height=2)
+plot4
+dev.off()
+
+
+#----
+df<-data.frame(matrix(NA, nrow=nrow(ctrl)))
+df$time<-ctrl$Time
+df$SC<-ctrl$SC/1000
+
+plot1<-ggplot()+geom_line(df, mapping=aes(time, SC),linewidth=1, color="#542788")+ 
+  scale_x_continuous(breaks=c(0,200,400))+
+  theme_pubr(border=TRUE)+theme(legend.position="right")+
+  theme(text=element_text(size=12))+
+  xlab("Time(Day)")+
+  ylab("SC (dS/m)")
+pdf("Ex1_SC.pdf",width=2.2, height=2)
+plot1
+dev.off()
+
+#----
+
+
+```
+
+
+

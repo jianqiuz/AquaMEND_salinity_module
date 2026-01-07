@@ -21,21 +21,13 @@ This conceptual model is implemented numerically into the open-source geochemica
 The soil solution chemistry is specified in the SOLUTION, GAS-PHASE, EXCHANGE, and SURFACE blocks. The reaction network is implemented using the KINETICS and RATES blocks. Salinity response functions are defined within the CALCULATE_VALUES block. Detailed guidelines for model implementation in PHREEQC are available in the user manual https://pubs.usgs.gov/tm/06/a43/
 
 ### File Dictionary
-
-- **`AquaMEND_microbial_mechanisms`**: Contains model setup and simulations for testing various microbial process-based hypotheses related to soil salinization, including microbial mortality, carbon use efficiency (CUE), extracellular enzyme activity, and other microbial mechanisms. Exactuable input files have a .phrq extension, while detailed output files are saved as .phrq.out, Extracted outputs are written to .txt files as specified in the input script.
-
-- **`AquaMEND_process_couple`**: Includes model setup and simulations for exploring coupled biotic-abiotic processes and their interactions.
-
-- **`AquaMEND_Redox`**: Focuses on model setup and simulations to evaluate shifts among key redox processes, such as aerobic respiration, sulfate reduction, and methanogenesis.
-
-- **`AquaMEND_salinity_buffer`**: Contains model setup and simulations to assess the impact of three different cation exchange and surface complexation processes on salinity buffering.
-
-- **`AquaMEND_sorption`**: Provides model setup and simulations for investigating the effects of salinity on dissolved organic matter (DOM) sorption and desorption processes.
-
+- **`AquaMEND_salinity_buffer`**: Contains model simulation outputs to assess the impact of three different cation exchange and surface complexation processes on salinity buffering (Fig. 2).
+- **`Salinity_function`**: Contains salinity function fitting for literature data (Fig. 3).
+- **`AquaMEND_microbial_mechanisms`**: Contains model simulation outputs for testing various microbial process-based hypotheses related to soil salinization, including microbial mortality, carbon use efficiency (CUE), extracellular enzyme activity, and other microbial mechanisms. Exactuable input files have a .phrq extension, while detailed output files are saved as .phrq.out, Extracted outputs are written to .txt files as specified in the input script (Fig. 4).
+- **`AquaMEND_Redox`**: Contains on model simulation outputs to evaluate shifts among key redox processes, such as aerobic respiration, sulfate reduction, and methanogenesis (Fig.5).
+- **`AquaMEND_sorption`**: Contains on model simulation outputs  for investigating the effects of salinity on dissolved organic matter (DOM) sorption and desorption processes (Fig. 6).
+- **`AquaMEND_process_couple`**: Contains on model simulation outputs for exploring coupled biotic-abiotic processes and their interactions (Fig. 7).
 - **`data`**: Includes datasets used to develop salinity response functions and evaluate salinity buffering capacity. Datasets for MEND model calibration.
-
-
-
 - **`database`**: Contains the `.dat` file required by PHREEQC for model execution. 
 
 

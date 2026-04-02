@@ -2,17 +2,17 @@ file,column_or_row_name,unit,definition,data_type
 ./data/cation_exchange/vanDijk_dataset.csv,Soil,,Soil name,text
 ./data/cation_exchange/vanDijk_dataset.csv,Species,,Ion species,text
 ./data/cation_exchange/vanDijk_dataset.csv,Unit,,Units,text
-./data/cation_exchange/vanDijk_dataset.csv,Time (day),,,numeric
+./data/cation_exchange/vanDijk_dataset.csv,Time (day),days,Incubation time (days),numeric
 ./data/cation_exchange/vanDijk_dataset.csv,Fresh,µmol/L,Value of species,numeric
 ./data/cation_exchange/vanDijk_dataset.csv,Fluctuating,µmol/L,Value of species,numeric
 ./data/cation_exchange/vanDijk_dataset.csv,Salty,µmol/L,Value of species,numeric
-./data/MEND_incubation/Andisol_control.csv,time,,,numeric
+./data/MEND_incubation/Andisol_control.csv,time,days,Incubation time (days),numeric
 ./data/MEND_incubation/Andisol_control.csv,IC,,,numeric
-./data/MEND_incubation/Gelisol_control.csv,time,,,numeric
+./data/MEND_incubation/Gelisol_control.csv,time,days,Incubation time (days),numeric
 ./data/MEND_incubation/Gelisol_control.csv,IC,,,numeric
-./data/MEND_incubation/Mollisol_control.csv,time,,,numeric
+./data/MEND_incubation/Mollisol_control.csv,time,days,Incubation time (days),numeric
 ./data/MEND_incubation/Mollisol_control.csv,IC,,,numeric
-./data/MEND_incubation/Ultisol_control.csv,time,,,numeric
+./data/MEND_incubation/Ultisol_control.csv,time,days,Incubation time (days),numeric
 ./data/MEND_incubation/Ultisol_control.csv,IC,,,numeric
 ./data/Salinity_response/Dong_bg.csv,salinity,,,numeric
 ./data/Salinity_response/Dong_bg.csv,rate,,,numeric
@@ -44,7 +44,7 @@ file,column_or_row_name,unit,definition,data_type
 ./data/Salinity_response/tripathi_p.csv,rate,,,numeric
 ./data/Salinity_response/tripathi_urea.csv,salinity,,,numeric
 ./data/Salinity_response/tripathi_urea.csv,rate,,,numeric
-./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,time,,,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,time,days,Incubation time (days),numeric
 ./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,pH,,,numeric
 ./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,Na,,,numeric
 ./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,K,,,numeric
@@ -54,7 +54,7 @@ file,column_or_row_name,unit,definition,data_type
 ./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,Cl,,,numeric
 ./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,NH4,,,numeric
 ./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,SO4,,,numeric
-./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,time,,,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,time,days,Incubation time (days),numeric
 ./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,pH,,,numeric
 ./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,Na,,,numeric
 ./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,K,,,numeric
@@ -64,7 +64,7 @@ file,column_or_row_name,unit,definition,data_type
 ./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,Cl,,,numeric
 ./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,NH4,,,numeric
 ./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,SO4,,,numeric
-./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,time,,,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,time,days,Incubation time (days),numeric
 ./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,pH,,,numeric
 ./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,Na,,,numeric
 ./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,K,,,numeric
@@ -74,7 +74,7 @@ file,column_or_row_name,unit,definition,data_type
 ./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,Cl,,,numeric
 ./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,NH4,,,numeric
 ./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,SO4,,,numeric
-./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,time,,,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,time,days,Incubation time (days),numeric
 ./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,pH,,,numeric
 ./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,Na,,,numeric
 ./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,K,,,numeric
@@ -84,11 +84,11 @@ file,column_or_row_name,unit,definition,data_type
 ./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,Cl,,,numeric
 ./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,NH4,,,numeric
 ./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,SO4,,,numeric
-./Figure4_AquaMEND_microbial_mechanisms/Ultisol_control_gram.csv,time,,,numeric
+./Figure4_AquaMEND_microbial_mechanisms/Ultisol_control_gram.csv,time,days,Incubation time (days),numeric
 ./Figure4_AquaMEND_microbial_mechanisms/Ultisol_control_gram.csv,IC,,,numeric
-./Figure7_AquaMEND_process_couple/annual_model.csv,parameter,,,numeric
-./Figure7_AquaMEND_process_couple/annual_model.csv,treatment,,,numeric
-./Figure7_AquaMEND_process_couple/annual_model.csv,process,,,numeric
-./Figure7_AquaMEND_process_couple/annual_model.csv,response,,,numeric
+./Figure7_AquaMEND_process_couple/annual_model.csv,parameter,,Parameter name,text
+./Figure7_AquaMEND_process_couple/annual_model.csv,treatment,,Treatment name,text
+./Figure7_AquaMEND_process_couple/annual_model.csv,process,,Model process name,text
+./Figure7_AquaMEND_process_couple/annual_model.csv,response,,Responsive type,text
 ./Figure7_AquaMEND_process_couple/annual_model.csv,IC,,,numeric
 ./Figure7_AquaMEND_process_couple/annual_model.csv,stdev,,,numeric

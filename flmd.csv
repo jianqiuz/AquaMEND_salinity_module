@@ -21,164 +21,164 @@ tripathi_mbc.csv, Dataset for MEND model calibration,ESS-DIVE CSV v1,,,,./data/S
 tripathi_p.csv, Dataset for MEND model calibration,ESS-DIVE CSV v1,,,,./data/Salinity_response
 tripathi_urea.csv, Dataset for MEND model calibration,ESS-DIVE CSV v1,,,,./data/Salinity_response
 redox.dat,File required by PHREEQC for model execution,,,,,./database
-clay_fresh_ctrl.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
-clay_fresh_high.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
-clay_fresh_low.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
-clay_fresh_ref.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
+clay_fresh_ctrl.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
+clay_fresh_high.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
+clay_fresh_low.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
+clay_fresh_ref.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
 clay_fresh.csv,Data for Figure 2,ESS-DIVE CSV v1,,,,./Figure2_AquaMEND_salinity_buffer
-clay_salt_ctrl.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
-clay_salt_high.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
-clay_salt_low.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
-clay_salt_ref.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
+clay_salt_ctrl.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
+clay_salt_high.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
+clay_salt_low.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
+clay_salt_ref.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
 clay_salt.csv,Data for Figure 2,ESS-DIVE CSV v1,,,,./Figure2_AquaMEND_salinity_buffer
-peat_fresh_high.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
-peat_fresh_low.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
-peat_fresh_ref.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
+peat_fresh_high.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
+peat_fresh_low.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
+peat_fresh_ref.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
 peat_fresh.csv,Data for Figure 2,ESS-DIVE CSV v1,,,,./Figure2_AquaMEND_salinity_buffer
-peat_salt_high.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
-peat_salt_low.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
-peat_salt_ref.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
+peat_salt_high.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
+peat_salt_low.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
+peat_salt_ref.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
 peat_salt.csv,Data for Figure 2,ESS-DIVE CSV v1,,,,./Figure2_AquaMEND_salinity_buffer
-salinity_buffering_plot.Rmd,Code for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
-vanD_clay_fresh_ctrl.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
-vanD_clay_salt_ctrl.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
-vanD_peat_fresh_ctrl.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
-vanD_peat_fresh_high.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
-vanD_peat_fresh_low.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
-vanD_peat_fresh_ref.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
-vanD_peat_salt_ctrl.txt,Data for Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
+salinity_buffering_plot.Rmd,Code to generate Figure 2,,,,,./Figure2_AquaMEND_salinity_buffer
+vanD_clay_fresh_ctrl.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
+vanD_clay_salt_ctrl.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
+vanD_peat_fresh_ctrl.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
+vanD_peat_fresh_high.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
+vanD_peat_fresh_low.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
+vanD_peat_fresh_ref.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
+vanD_peat_salt_ctrl.txt,Data for Figure 2 (model output),,,,,./Figure2_AquaMEND_salinity_buffer
 Salinity_function_ploting.Rmd,Code for Figure 3,,,,,./Figure3_Salinity_function
-aquaMEND_microbial_plot.Rmd,Code for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-cue_fs1.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-cue_fs2.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-cue_fs3.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-cue_fs4.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-enzyme_fs1.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-enzyme_fs2.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-enzyme_fs3.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-enzyme_fs4.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-Ex1_f1.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-Ex1_f2.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-Ex1_f3.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-Ex1_f4.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-Ex2_f1.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-Ex2_f2.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-Ex2_f3.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-Ex2_f4.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-Ex3_f1.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-Ex3_f2.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-Ex3_f3.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-Ex3_f4.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-Ex4_f1.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-Ex4_f2.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-Ex4_f3.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-Ex4_f4.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-mort_fs1.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-mort_fs2.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-mort_fs3.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-mort_fs4.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
-new_ref.txt,Data for Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
+aquaMEND_microbial_plot.Rmd,Code to generate Figure 4,,,,,./Figure4_AquaMEND_microbial_mechanisms
+cue_fs1.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+cue_fs2.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+cue_fs3.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+cue_fs4.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+enzyme_fs1.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+enzyme_fs2.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+enzyme_fs3.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+enzyme_fs4.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+Ex1_f1.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+Ex1_f2.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+Ex1_f3.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+Ex1_f4.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+Ex2_f1.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+Ex2_f2.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+Ex2_f3.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+Ex2_f4.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+Ex3_f1.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+Ex3_f2.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+Ex3_f3.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+Ex3_f4.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+Ex4_f1.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+Ex4_f2.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+Ex4_f3.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+Ex4_f4.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+mort_fs1.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+mort_fs2.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+mort_fs3.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+mort_fs4.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
+new_ref.txt,Data for Figure 4 (model output),,,,,./Figure4_AquaMEND_microbial_mechanisms
 Ultisol_control_gram.csv,Data for Figure 4,ESS-DIVE CSV v1,,,,./Figure4_AquaMEND_microbial_mechanisms
 aquaMEND_redox_plot.Rmd,Code for Figure 4,,,,,./Figure5_AquaMEND_Redox
-closed_redox_petest.txt,Data for Figure 5,,,,,./Figure5_AquaMEND_Redox
-closed_redox_sw1.txt,Data for Figure 5,,,,,./Figure5_AquaMEND_Redox
-closed_redox_sw2.txt,Data for Figure 5,,,,,./Figure5_AquaMEND_Redox
-closed_redox_sw3.txt,Data for Figure 5,,,,,./Figure5_AquaMEND_Redox
-closed_redox_sw3new.txt,Data for Figure 5,,,,,./Figure5_AquaMEND_Redox
-closed_redox_sw3ref.txt,Data for Figure 5,,,,,./Figure5_AquaMEND_Redox
-closed_redox_sw4.txt,Data for Figure 5,,,,,./Figure5_AquaMEND_Redox
-closed_redox_sw5.txt,Data for Figure 5,,,,,./Figure5_AquaMEND_Redox
-fixp_redox_sw1.txt,Data for Figure 5,,,,,./Figure5_AquaMEND_Redox
-fixp_redox_sw2.txt,Data for Figure 5,,,,,./Figure5_AquaMEND_Redox
-fixp_redox_sw3.txt,Data for Figure 5,,,,,./Figure5_AquaMEND_Redox
-fixp_redox_sw4.txt,Data for Figure 5,,,,,./Figure5_AquaMEND_Redox
-fixp_redox_sw5.txt,Data for Figure 5,,,,,./Figure5_AquaMEND_Redox
-redox_ref.txt,Data for Figure 5,,,,,./Figure5_AquaMEND_Redox
-aquaMEND_sorption_plot.Rmd,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt1_max3_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt1_max4_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt1_max5_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt1_max6_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt1_max7_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt1_max8_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt2_max3_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt2_max4_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt2_max5_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt2_max6_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt2_max7_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt2_max8_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt3_max3_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt3_max4_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt3_max5_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt3_max6_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt3_max7_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt3_max8_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt4_max3_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt4_max4_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt4_max5_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt4_max6_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt4_max7_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt4_max8_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt5_max3_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt5_max4_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt5_max5_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt5_max6_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt5_max7_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt5_max8_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt6_max3_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt6_max4_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt6_max5_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt6_max6_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt6_max7_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
-salt6_max8_both.txt,Data for Figure 6,,,,,./Figure6_AquaMEND_sorption
+closed_redox_petest.txt,Data for Figure 5 (model output),,,,,./Figure5_AquaMEND_Redox
+closed_redox_sw1.txt,Data for Figure 5 (model output),,,,,./Figure5_AquaMEND_Redox
+closed_redox_sw2.txt,Data for Figure 5 (model output),,,,,./Figure5_AquaMEND_Redox
+closed_redox_sw3.txt,Data for Figure 5 (model output),,,,,./Figure5_AquaMEND_Redox
+closed_redox_sw3new.txt,Data for Figure 5 (model output),,,,,./Figure5_AquaMEND_Redox
+closed_redox_sw3ref.txt,Data for Figure 5 (model output),,,,,./Figure5_AquaMEND_Redox
+closed_redox_sw4.txt,Data for Figure 5 (model output),,,,,./Figure5_AquaMEND_Redox
+closed_redox_sw5.txt,Data for Figure 5 (model output),,,,,./Figure5_AquaMEND_Redox
+fixp_redox_sw1.txt,Data for Figure 5 (model output),,,,,./Figure5_AquaMEND_Redox
+fixp_redox_sw2.txt,Data for Figure 5 (model output),,,,,./Figure5_AquaMEND_Redox
+fixp_redox_sw3.txt,Data for Figure 5 (model output),,,,,./Figure5_AquaMEND_Redox
+fixp_redox_sw4.txt,Data for Figure 5 (model output),,,,,./Figure5_AquaMEND_Redox
+fixp_redox_sw5.txt,Data for Figure 5 (model output),,,,,./Figure5_AquaMEND_Redox
+redox_ref.txt,Data for Figure 5 (model output),,,,,./Figure5_AquaMEND_Redox
+aquaMEND_sorption_plot.Rmd,Code to generate Figure 6,,,,,./Figure6_AquaMEND_sorption
+salt1_max3_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt1_max4_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt1_max5_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt1_max6_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt1_max7_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt1_max8_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt2_max3_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt2_max4_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt2_max5_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt2_max6_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt2_max7_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt2_max8_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt3_max3_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt3_max4_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt3_max5_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt3_max6_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt3_max7_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt3_max8_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt4_max3_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt4_max4_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt4_max5_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt4_max6_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt4_max7_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt4_max8_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt5_max3_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt5_max4_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt5_max5_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt5_max6_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt5_max7_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt5_max8_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt6_max3_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt6_max4_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt6_max5_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt6_max6_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt6_max7_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
+salt6_max8_both.txt,Data for Figure 6 (model output),,,,,./Figure6_AquaMEND_sorption
 annual_model.csv,Data for Figure 7,ESS-DIVE CSV v1,,,,./Figure7_AquaMEND_process_couple
-aquaMEND_process_plot.Rmd,Code for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-cue_fs1.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-cue_fs2.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-cue_fs3.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-cue_fs4.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-cue_kba_fs1.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-cue_kba_fs2.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-cue_kba_fs3.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-cue_kba_fs4.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-cue_qmax_fs1.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-cue_qmax_fs2.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-cue_qmax_fs3.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-cue_qmax_fs4.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-cue_ref.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-cue_sul_fs1.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-cue_sul_fs2.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-cue_sul_fs3.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-cue_sul_fs4.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-enzyme_fs1.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-enzyme_fs2.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-enzyme_fs3.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-enzyme_fs4.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-enzyme_kba_fs1.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-enzyme_kba_fs2.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-enzyme_kba_fs3.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-enzyme_kba_fs4.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-enzyme_qmax_fs1.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-enzyme_qmax_fs2.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-enzyme_qmax_fs3.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-enzyme_qmax_fs4.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-enzyme_sul_fs1.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-enzyme_sul_fs2.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-enzyme_sul_fs3.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-enzyme_sul_fs4.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-mort_fs1.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-mort_fs2.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-mort_fs3.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-mort_fs4.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-mort_kba_fs1.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-mort_kba_fs2.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-mort_kba_fs3.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-mort_kba_fs4.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-mort_qmax_fs1.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-mort_qmax_fs2.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-mort_qmax_fs3.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-mort_qmax_fs4.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-mort_sul_fs1.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-mort_sul_fs2.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-mort_sul_fs3.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
-mort_sul_fs4.txt,Data for Figure 7,,,,,./Figure7_AquaMEND_process_couple
+aquaMEND_process_plot.Rmd,Code to generate Figure 7,,,,,./Figure7_AquaMEND_process_couple
+cue_fs1.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+cue_fs2.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+cue_fs3.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+cue_fs4.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+cue_kba_fs1.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+cue_kba_fs2.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+cue_kba_fs3.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+cue_kba_fs4.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+cue_qmax_fs1.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+cue_qmax_fs2.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+cue_qmax_fs3.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+cue_qmax_fs4.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+cue_ref.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+cue_sul_fs1.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+cue_sul_fs2.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+cue_sul_fs3.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+cue_sul_fs4.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+enzyme_fs1.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+enzyme_fs2.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+enzyme_fs3.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+enzyme_fs4.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+enzyme_kba_fs1.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+enzyme_kba_fs2.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+enzyme_kba_fs3.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+enzyme_kba_fs4.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+enzyme_qmax_fs1.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+enzyme_qmax_fs2.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+enzyme_qmax_fs3.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+enzyme_qmax_fs4.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+enzyme_sul_fs1.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+enzyme_sul_fs2.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+enzyme_sul_fs3.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+enzyme_sul_fs4.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+mort_fs1.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+mort_fs2.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+mort_fs3.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+mort_fs4.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+mort_kba_fs1.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+mort_kba_fs2.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+mort_kba_fs3.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+mort_kba_fs4.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+mort_qmax_fs1.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+mort_qmax_fs2.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+mort_qmax_fs3.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+mort_qmax_fs4.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+mort_sul_fs1.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+mort_sul_fs2.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+mort_sul_fs3.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple
+mort_sul_fs4.txt,Data for Figure 7 (model output),,,,,./Figure7_AquaMEND_process_couple

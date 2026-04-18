@@ -2,7 +2,7 @@ file,column_or_row_name,unit,definition,data_type
 ./data/cation_exchange/vanDijk_dataset.csv,Soil,,Soil name,text
 ./data/cation_exchange/vanDijk_dataset.csv,Species,,Ion species,text
 ./data/cation_exchange/vanDijk_dataset.csv,Unit,,Units,text
-./data/cation_exchange/vanDijk_dataset.csv,Time (day),days,Elapsed time since the beginning of the experiment,numeric
+./data/cation_exchange/vanDijk_dataset.csv,Day,days,Elapsed time since the beginning of the experiment,numeric
 ./data/cation_exchange/vanDijk_dataset.csv,Fresh,µmol/L,Observed value under freshwater treatment condition,numeric
 ./data/cation_exchange/vanDijk_dataset.csv,Fluctuating,µmol/L,Observed value under fluctuating salinity treatment condition,numeric
 ./data/cation_exchange/vanDijk_dataset.csv,Salty,µmol/L,Observed value under salty brackish water treatment condition,numeric

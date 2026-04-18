@@ -1,0 +1,94 @@
+file,column_or_row_name,unit,definition,data_type
+./data/cation_exchange/vanDijk_dataset.csv,Soil,,Soil name,text
+./data/cation_exchange/vanDijk_dataset.csv,Species,,Ion species,text
+./data/cation_exchange/vanDijk_dataset.csv,Unit,,Units,text
+./data/cation_exchange/vanDijk_dataset.csv,Day,days,Elapsed time since the beginning of the experiment,numeric
+./data/cation_exchange/vanDijk_dataset.csv,Fresh,µmol/L,Observed value under freshwater treatment condition,numeric
+./data/cation_exchange/vanDijk_dataset.csv,Fluctuating,µmol/L,Observed value under fluctuating salinity treatment condition,numeric
+./data/cation_exchange/vanDijk_dataset.csv,Salty,µmol/L,Observed value under salty brackish water treatment condition,numeric
+./data/MEND_incubation/Andisol_control.csv,time,days,Incubation time (days),numeric
+./data/MEND_incubation/Andisol_control.csv,IC,mgC/gsoil,Heterotrophic respiration,numeric
+./data/MEND_incubation/Gelisol_control.csv,time,days,Incubation time (days),numeric
+./data/MEND_incubation/Gelisol_control.csv,IC,mgC/gsoil,Heterotrophic respiration,numeric
+./data/MEND_incubation/Mollisol_control.csv,time,days,Incubation time (days),numeric
+./data/MEND_incubation/Mollisol_control.csv,IC,mgC/gsoil,Heterotrophic respiration,numeric
+./data/MEND_incubation/Ultisol_control.csv,time,days,Incubation time (days),numeric
+./data/MEND_incubation/Ultisol_control.csv,IC,mgC/gsoil,Heterotrophic respiration,numeric
+./data/Salinity_response/Dong_bg.csv,salinity,dS/m,Salinity treatment level,numeric
+./data/Salinity_response/Dong_bg.csv,rate,NA,"Rates of microbial activities (measured as respiration, growth, or enzyme activities) normalized within each individual experiment",numeric
+./data/Salinity_response/Dong_growth.csv,salinity,dS/m,Salinity treatment level,numeric
+./data/Salinity_response/Dong_growth.csv,rate,NA,"Rates of microbial activities (measured as respiration, growth, or enzyme activities) normalized within each individual experiment",numeric
+./data/Salinity_response/Dong_lap.csv,salinity,dS/m,Salinity treatment level,numeric
+./data/Salinity_response/Dong_lap.csv,rate,NA,"Rates of microbial activities (measured as respiration, growth, or enzyme activities) normalized within each individual experiment",numeric
+./data/Salinity_response/Dong_nag.csv,salinity,dS/m,Salinity treatment level,numeric
+./data/Salinity_response/Dong_nag.csv,rate,NA,"Rates of microbial activities (measured as respiration, growth, or enzyme activities) normalized within each individual experiment",numeric
+./data/Salinity_response/laura_closs.csv,salinity,dS/m,Salinity treatment level,numeric
+./data/Salinity_response/laura_closs.csv,rate,NA,"Rates of microbial activities (measured as respiration, growth, or enzyme activities) normalized within each individual experiment",numeric
+./data/Salinity_response/Rath_data1_BacGrowth.csv,salinity,dS/m,Salinity treatment level,numeric
+./data/Salinity_response/Rath_data1_BacGrowth.csv,rate,NA,"Rates of microbial activities (measured as respiration, growth, or enzyme activities) normalized within each individual experiment",numeric
+./data/Salinity_response/Rath_data2_FunGrowth.csv,salinity,dS/m,Salinity treatment level,numeric
+./data/Salinity_response/Rath_data2_FunGrowth.csv,rate,NA,"Rates of microbial activities (measured as respiration, growth, or enzyme activities) normalized within each individual experiment",numeric
+./data/Salinity_response/Rath_data3_resp.csv,salinity,dS/m,Salinity treatment level,numeric
+./data/Salinity_response/Rath_data3_resp.csv,rate,NA,"Rates of microbial activities (measured as respiration, growth, or enzyme activities) normalized within each individual experiment",numeric
+./data/Salinity_response/tripathi_acidp.csv,salinity,dS/m,Salinity treatment level,numeric
+./data/Salinity_response/tripathi_acidp.csv,rate,NA,"Rates of microbial activities (measured as respiration, growth, or enzyme activities) normalized within each individual experiment",numeric
+./data/Salinity_response/tripathi_alkp.csv,salinity,dS/m,Salinity treatment level,numeric
+./data/Salinity_response/tripathi_alkp.csv,rate,NA,"Rates of microbial activities (measured as respiration, growth, or enzyme activities) normalized within each individual experiment",numeric
+./data/Salinity_response/tripathi_dehy.csv,salinity,dS/m,Salinity treatment level,numeric
+./data/Salinity_response/tripathi_dehy.csv,rate,NA,"Rates of microbial activities (measured as respiration, growth, or enzyme activities) normalized within each individual experiment",numeric
+./data/Salinity_response/tripathi_glucosidase.csv,salinity,dS/m,Salinity treatment level,numeric
+./data/Salinity_response/tripathi_glucosidase.csv,rate,NA,"Rates of microbial activities (measured as respiration, growth, or enzyme activities) normalized within each individual experiment",numeric
+./data/Salinity_response/tripathi_mbc.csv,salinity,dS/m,Salinity treatment level,numeric
+./data/Salinity_response/tripathi_mbc.csv,rate,NA,"Rates of microbial activities (measured as respiration, growth, or enzyme activities) normalized within each individual experiment",numeric
+./data/Salinity_response/tripathi_p.csv,salinity,dS/m,Salinity treatment level,numeric
+./data/Salinity_response/tripathi_p.csv,rate,NA,"Rates of microbial activities (measured as respiration, growth, or enzyme activities) normalized within each individual experiment",numeric
+./data/Salinity_response/tripathi_urea.csv,salinity,dS/m,Salinity treatment level,numeric
+./data/Salinity_response/tripathi_urea.csv,rate,NA,"Rates of microbial activities (measured as respiration, growth, or enzyme activities) normalized within each individual experiment",numeric
+./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,time,days,Elapsed time since the beginning of the experiment,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,pH,(unitless),Pore water pH,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,Na,mM,Pore water sodium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,K,mM,Pore water potassium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,Ca,mM,Pore water calcium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,Mg,mM,Pore water magnesium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,PO4,mM,Pore water phosphate ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,Cl,mM,Pore water chloride ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,NH4,mM,Pore waterammonium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_fresh.csv,SO4,mM,Pore water sulfate  ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,time,days,Elapsed time since the beginning of the experiment,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,pH,(unitless),Pore water pH,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,Na,mM,Pore water sodium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,K,mM,Pore water potassium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,Ca,mM,Pore water calcium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,Mg,mM,Pore water magnesium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,PO4,mM,Pore water phosphate ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,Cl,mM,Pore water chloride ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,NH4,mM,Pore waterammonium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/clay_salt.csv,SO4,mM,Pore water sulfate  ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,time,days,Elapsed time since the beginning of the experiment,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,pH,(unitless),Pore water pH,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,Na,mM,Pore water sodium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,K,mM,Pore water potassium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,Ca,mM,Pore water calcium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,Mg,mM,Pore water magnesium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,PO4,mM,Pore water phosphate ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,Cl,mM,Pore water chloride ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,NH4,mM,Pore waterammonium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_fresh.csv,SO4,mM,Pore water sulfate  ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,time,days,Elapsed time since the beginning of the experiment,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,pH,(unitless),Pore water pH,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,Na,mM,Pore water sodium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,K,mM,Pore water potassium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,Ca,mM,Pore water calcium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,Mg,mM,Pore water magnesium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,PO4,mM,Pore water phosphate ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,Cl,mM,Pore water chloride ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,NH4,mM,Pore waterammonium ion concentration,numeric
+./Figure2_AquaMEND_salinity_buffer/peat_salt.csv,SO4,mM,Pore water sulfate  ion concentration,numeric
+./Figure4_AquaMEND_microbial_mechanisms/Ultisol_control_gram.csv,time,days,Incubation time (days),numeric
+./Figure4_AquaMEND_microbial_mechanisms/Ultisol_control_gram.csv,IC,mgC/gsoil,Heterotrophic respiration,numeric
+./Figure7_AquaMEND_process_couple/annual_model.csv,parameter,,Parameter name,text
+./Figure7_AquaMEND_process_couple/annual_model.csv,treatment,,Treatment name,text
+./Figure7_AquaMEND_process_couple/annual_model.csv,process,,Model process name,text
+./Figure7_AquaMEND_process_couple/annual_model.csv,response,,Responsive type,text
+./Figure7_AquaMEND_process_couple/annual_model.csv,IC,mgC/gsoil,Heterotrophic respiration,numeric
+./Figure7_AquaMEND_process_couple/annual_model.csv,stdev,mgC/gsoil,Standard deviation of HR,numeric
